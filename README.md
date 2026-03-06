@@ -21,4 +21,4 @@ The first prototype  will focus on building the foundation of the app:
    Melanie: Profile prototype
  * Sprint 3
    Anna:
-   Melanie
+   Melanie:
