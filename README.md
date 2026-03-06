@@ -12,4 +12,13 @@ The first prototype  will focus on building the foundation of the app:
   * Homepage
   * Login and registration system
   * Profile page
-  
+# Sprints 
+ * Sprint 1
+   Anna: Django setup, login and home page
+   Melanie: Made changes to the name
+ * Sprint 2
+   Anna: Home page prototype
+   Melanie: Profile prototype
+ * Sprint 3
+   Anna:
+   Melanie
