@@ -20,5 +20,6 @@ The first prototype  will focus on building the foundation of the app:
    Anna: Home page prototype
    Melanie: Profile prototype
  * Sprint 3
-   Anna:
-   Melanie:
+   Anna & Melanie: Work on Figma prototype
+   Link: https://www.figma.com/design/JhgLjZyBZPv3U7ldjhkwSy/Figma-basics?node-id=1669-162202&t=EzRCvfGiioPoiQ6k-1
+   
