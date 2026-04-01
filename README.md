@@ -12,6 +12,16 @@ The first prototype  will focus on building the foundation of the app:
   * Homepage
   * Login and registration system
   * Profile page
+# Phase 1.0
+Anna:
+* Recently created a new branch that is designated for the front platform mainly consisting on the design
+* Work on the design of Home, and navbar html files
+* Created a new file named main_home page that will be the actual home page when login in
+* Fixed the Logout system
+  
+Melanie:
+
+
 # Sprints 
  * Sprint 1
    Anna: Django setup, login and home page
