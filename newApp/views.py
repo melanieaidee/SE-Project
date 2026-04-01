@@ -3,11 +3,15 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from .forms import UserUpdateForm, ProfileUpdateForm
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import authenticate, login # will be exclusive 
+from django.contrib.auth import logout
 
-
+#this is the home view which will be the page before login
 def home(request):
     return render(request, 'home.html', {})
-
+#added main_home view this will be the main page after login 
+def main_home(request):
+    return render(request, 'main_home.html', {})
 
 def register(request):
     if request.method == "POST":
@@ -39,3 +43,19 @@ def profile(request):
         p_form = ProfileUpdateForm(instance=request.user.profile)
 
     return render(request, 'profile.html', {'u_form': u_form, 'p_form': p_form})
+#added this 
+def login_view(request):
+    if request.method == "POST":
+        username = request.POST.get("username")
+        password = request.POST.get("password")
+
+        user = authenticate(request, username=username, password=password)
+
+        if user is not None:
+            login(request, user)
+            return redirect('main_home') 
+    return render(request, 'login.html')
+#this is the logout view which will log the user out and redirect to home page
+def logout_view(request):
+    logout(request)
+    return redirect('home')

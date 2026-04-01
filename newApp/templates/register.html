@@ -7,3 +7,9 @@
 </form>
 
 <a href="{% url 'login' %}">Login</a>
+#if there are any errors in the form it will display them
+{% if form.errors %}
+    <div class="errors">
+        {{ form.errors }}
+    </div>
+{% endif %}
