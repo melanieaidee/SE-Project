@@ -12,7 +12,9 @@ def home(request):
 #added main_home view this will be the main page after login 
 def main_home(request):
     return render(request, 'main_home.html', {})
-
+#this is the chat view which will be the page for chatting after login
+def chat(request):
+    return render(request, 'chat.html', {})
 def register(request):
     if request.method == "POST":
         form = UserCreationForm(request.POST)
