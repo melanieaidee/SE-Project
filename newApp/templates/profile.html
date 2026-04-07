@@ -1,11 +1,24 @@
-<h2>USER Profile</h2>
+{% extends 'base.html' %}
 
- <form method="POST">
+{% block content %}
+
+<h1>{{ profile_user.username }}'s Profile</h1>
+
+<div class="profile-stats">
+    <p><strong>{{ followers_count }}</strong> Followers</p>
+    <p><strong>{{ following_count }}</strong> Following</p>
+</div>
+<!-- Follow/Unfollow Button -->
+{% if request.user != profile_user %}
+    <form method="POST" action="{% url 'follow_view' profile_user.username %}">
         {% csrf_token %}
-        {{  u_form.as_p }}
-         {{ p_form.as_p }}
-        <button type="submit">Update account</button>
-</form>
+        
+        {% if is_following %}
+            <button type="submit" class="follow-btn">Unfollow</button>
+        {% else %}
+            <button type="submit" class="follow-btn">Follow</button>
+        {% endif %}
+    </form>
+{% endif %}
 
-    <a href="{% url 'home' %}">Home</a>
-
+{% endblock %}
