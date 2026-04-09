@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'newApp.apps.NewappConfig',
+    'springApp',
 ]
 #will go to NewApp -> then apps.py -> NewappConfig
 MIDDLEWARE = [
