@@ -59,3 +59,9 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return redirect('home')
+
+def signup(request):
+    return render(request, 'login.html')
+
+def signup(request):
+    return render(request, 'signup.html')
