@@ -26,7 +26,9 @@ The first prototype focuses on building the foundation of the app:
 
 ### Melanie:
 - Worked on login system and profile prototype  
-- Updated naming conventions  
+- Updated naming conventions
+- Fixed login system
+- Created static.py for frontend of login
 
 ---
 
@@ -40,7 +42,11 @@ The first prototype focuses on building the foundation of the app:
 - Added follower and following counts to user profiles  
 - Updated profile page to show:  
   - Follow button  
-  - Follower/Following counts  
+  - Follower/Following counts
+### Melanie:
+- Worked on frontend and backend for login/signin system
+- Added a submit button with proper redirects
+- Added a "must have @utrgv.edu account" restriction for signup
 ---
 # Sprints  
 ### Sprint 1  
@@ -56,10 +62,10 @@ The first prototype focuses on building the foundation of the app:
 
 ### Sprint 4  
 - **Anna:** Created new branch for HTML/CSS, designed home and navbar, created main_home file, fixed logout  
-- **Melanie:** Worked on login system and HTML  
+- **Melanie:** Worked on login/signup system using and HTML, CSS
 
 ### Sprint 5  
 - **Anna:** Created backend branch, implemented follow system, follow/unfollow button, follower/following lists
-- **Melanie:** 
+- **Melanie:** Worked on frontend and backend for login/signin system using HTML and CSS, sign up button and submit button
    
    
