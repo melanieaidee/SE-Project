@@ -10,5 +10,5 @@ urlpatterns = [
     path('signup/', views.signup, name = 'signup'),
     path('logout/', views.logout_view, name='logout'),#redirect to home after logout
     path('main_home/', views.main_home, name='main_home'), #created this 
-    path('chat/', views.chat, name='chat') #created this
+    
 ]
