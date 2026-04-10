@@ -1,3 +1,4 @@
+# Now Both branches are merge for phase 1.0 and 1.1
 # Phase 1.0
 ### Anna:
 - Created a new branch dedicated to the front-end platform (HTML/CSS design)
@@ -8,4 +9,16 @@
 ### Melanie:
 - Worked on login system and profile prototype  
 - Updated naming conventions  
+
+# Phase 1.1 — Backend Update 
+### Anna:
+**New backend features added:**
+- Created a new backend branch (`back_enddesign`)
+- Implemented the full Follow/Unfollow system  
+- Added the Follow model and database migration  
+- Added follow/unfollow button logic with the proper redirects  
+- Added follower and following counts to user profiles  
+- Updated profile page to show:  
+  - Follow button  
+  - Follower/Following counts
 
