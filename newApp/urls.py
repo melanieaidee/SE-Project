@@ -7,10 +7,10 @@ urlpatterns = [
     path('register/', views.register, name='register'),
     path('profile/', views.profile, name='profile'),
     path('login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
-    path('signup/', views.signup, name='signup'),
     path('logout/', views.logout_view, name='logout'),
     path('main_home/', views.main_home, name='main_home'),
     path("follow/<str:username>/", views.follow_view, name="follow_view"),
     path("user/<str:username>/", views.user_profile, name="user_profile"),
 ]
+
 

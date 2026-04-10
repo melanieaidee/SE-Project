@@ -120,3 +120,4 @@ STATIC_URL = 'static/'
 LOGIN_URL = 'login'
 LOGOUT_REDIRECT_URL = 'home'
 LOGIN_REDIRECT_URL = 'main_home' #instead of home, will redirect to exclusive home page for logged in users
+AUTH_USER_MODEL = 'auth.User' 

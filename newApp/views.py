@@ -20,15 +20,42 @@ def main_home(request):
 #####################################################################################################
 def register(request):
     if request.method == "POST":
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Account created successfully")
-            return redirect('login')
-    else:
-        form = UserCreationForm()
+        username = request.POST.get("username")
+        email = request.POST.get("email")
+        password1 = request.POST.get("password1")
+        password2 = request.POST.get("password2")
 
-    return render(request, 'register.html', {'form': form})
+        # if Passwords match
+        if password1 != password2:
+            messages.error(request, "Passwords do not match")
+            return redirect('register')
+
+        # Must be a UTRGV email
+        if not email.endswith("@utrgv.edu"):
+            messages.error(request, "Email must be a UTRGV email")
+            return redirect('register')
+
+        # warned about username taken
+        if User.objects.filter(username=username).exists():
+            messages.error(request, "Username already taken")
+            return redirect('register')
+
+        # warned about email already registered
+        if User.objects.filter(email=email).exists():
+            messages.error(request, "Email already registered")
+            return redirect('register')
+
+        # Create user
+        user = User.objects.create_user(
+            username=username,
+            email=email,
+            password=password1
+        )
+
+        messages.success(request, "Account created successfully")
+        return redirect('login')
+
+    return render(request, 'signup.html')
 #####################################################################################################
 @login_required
 def profile(request):
@@ -112,6 +139,8 @@ def user_profile(request, username):
 
     followers_count = profile_user.followers.count()
     following_count = profile_user.following.count()
+    u_form = None
+    p_form = None
 
     return render(request, 'profile.html', {
         'profile_user': profile_user,
@@ -120,7 +149,4 @@ def user_profile(request, username):
         'following_count': following_count,
     })
 
-#####################################################################################################
-#this is the signup view which will render the signup page for new users to create an account
-def signup(request):
-    return render(request, 'signup.html')
+

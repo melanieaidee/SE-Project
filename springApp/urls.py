@@ -5,5 +5,5 @@ from newApp import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('newApp.urls')),
-    path('signup/', views.signup, name = 'signup')
+    
 ]
