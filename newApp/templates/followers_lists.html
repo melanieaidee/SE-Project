@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1>{{ list_users.username }}'s Followers</h1>
+
+{% for f in followers %}
+    <div>
+        <a href="{% url 'user_profile' f.follower.username %}">
+            {{ f.follower.username }}
+        </a>
+    </div>
+{% empty %}
+    <p>No followers yet.</p>
+{% endfor %}
+
+{% endblock %}

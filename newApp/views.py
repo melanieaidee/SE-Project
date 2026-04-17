@@ -136,7 +136,7 @@ def user_profile(request, username):
         follower=request.user,
         following=profile_user
     ).exists()
-
+#count the number of followers and following for the user whose profile is being viewed
     followers_count = profile_user.followers.count()
     following_count = profile_user.following.count()
     u_form = None
@@ -148,5 +148,25 @@ def user_profile(request, username):
         'followers_count': followers_count,
         'following_count': following_count,
     })
+#####################################################################################################
+#will separate the followers and following lists into their own views and templates easier not to mess it up
+#this will be the followers view for the user to direct them to the followers list of users   
 
+def followers_lists(request, username):
+    list_users = get_object_or_404(User, username=username)#this is the user whose followers we want to see
+    followers = list_users.followers.all()
+    return render(request, 'followers_lists.html', {
+        'list_users': list_users,
+        'followers': followers,
+        
+    })
+#this will be the following view for the user to direct them to the following list of users   
+def following_lists(request, username):
+    list_users = get_object_or_404(User, username=username)#this is the user whose followers we want to see
+    following = list_users.following.all()
+    return render(request, 'following_lists.html', {
+        'list_users': list_users,
+        'following': following,
+        
+    })
 

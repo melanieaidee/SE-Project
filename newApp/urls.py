@@ -11,6 +11,8 @@ urlpatterns = [
     path('main_home/', views.main_home, name='main_home'),
     path("follow/<str:username>/", views.follow_view, name="follow_view"),
     path("user/<str:username>/", views.user_profile, name="user_profile"),
+    path("<str:username>/followers/", views.followers_lists, name="followers_lists"),
+    path("<str:username>/following/", views.following_lists, name="following_lists"),
 ]
 
 

@@ -6,10 +6,16 @@ from django.contrib.auth.models import User
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     bio = models.TextField(blank=True, null=True)
-    student_id = models.IntegerField(blank=True, null=True)
-    enrolled = models.BooleanField(default=False)
-
-    
+    ENROLLED_CHOICES = [
+        ('ED', 'Edinburg'),
+        ('BR', 'Brownsville'),
+        
+    ]
+    enrolled = models.CharField(
+        max_length=20,
+        choices=ENROLLED_CHOICES,
+        default='ED'
+    )
     def __str__(self):
         return self.user.username
 #this is the follow model which will be used to create the follow and unfollow functionality
