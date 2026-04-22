@@ -22,3 +22,13 @@
   - Follow button  
   - Follower/Following counts
 
+# Phase 1.3 — Backend new Update 
+### Anna:
+**New backend features added:**
+- Created another backend branch (`back_end1.3`)
+- Implemented the post system
+- Made a database for the post
+- Added a new page to create posts for the user to upload and share their pictures
+- When sharing new posts the posts will show in the main_home and the profile pages
+- Added the post count and showcase on the user Profile 
+- Update the enrolled selection for Users to know which campus each student is from
