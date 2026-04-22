@@ -9,14 +9,24 @@
     <!-- RIGHT SIDE -->
     <div class="nav-right">
 
-        <!-- Always show Home -->
-         {% if request.resolver_match.url_name != 'home' %}
+        <!-- PLUS BUTTON FOR CREATE POST -->
+        {% if request.user.is_authenticated %}
+        <a href="{% url 'create_post' %}" class="create-btn" title="Create Post">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="white" class="bi bi-plus-circle" viewBox="0 0 16 16">
+                <path d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1m0 1a6 6 0 1 1 0 12A6 6 0 0 1 8 2"/>
+                <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
+            </svg>
+        </a>
+        {% endif %}
+
+        <!-- Always shows Home -->
+        {% if request.resolver_match.url_name != 'home' %}
         <a href="{% url 'main_home' %}">Home</a>
         {% endif %}
-        {% if request.user.is_authenticated %}
-            <a href="{% url 'profile' %}">User</a>
-            <a href="{% url 'logout' %}">Logout</a>
 
+        {% if request.user.is_authenticated %}
+            <a href="{% url 'profile' request.user.username %}">Profile</a>
+            <a href="{% url 'logout' %}">Logout</a>
         {% else %}
             <a href="{% url 'login' %}">Login</a>
         {% endif %}
@@ -29,7 +39,7 @@
         background-color: #d14003;
         padding: 10px 20px;
         display: flex;
-        justify-content: space-between; /* LEFT and RIGHT separated */
+        justify-content: space-between;
         align-items: center;
     }
 
@@ -50,5 +60,15 @@
 
     .nav-right a:hover {
         color: #2c2a27;
+    }
+
+    /* Style for the + button */
+    .create-btn svg {
+        vertical-align: middle;
+        transition: transform 0.2s ease;
+    }
+
+    .create-btn:hover svg {
+        transform: scale(1.15);
     }
 </style>

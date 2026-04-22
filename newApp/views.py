@@ -9,6 +9,11 @@ from django.contrib.auth import logout
 from django.contrib.auth.models import User
 from django.shortcuts import redirect, get_object_or_404
 from .models import Follow 
+from .forms import PostForm #added this for the post form
+from .models import Post #added this for the post model
+from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import redirect
+
 #####################################################################################################
 #this is the home view which will be the page before login
 def home(request):
@@ -16,7 +21,8 @@ def home(request):
 #####################################################################################################
 #added main_home view this will be the main page after login 
 def main_home(request):
-    return render(request, 'main_home.html', {})
+    posts = Post.objects.all().order_by('-created_at')
+    return render(request, 'main_home.html', {'posts': posts})
 #####################################################################################################
 def register(request):
     if request.method == "POST":
@@ -57,47 +63,70 @@ def register(request):
 
     return render(request, 'signup.html')
 #####################################################################################################
+#this is a signal that will create a profile for the user when they have registered
 @login_required
-def profile(request):
-    profile_user = request.user  # the user whose profile is being viewed
-    followers_count = profile_user.followers.count()
-    following_count = profile_user.following.count()
-    #if the request method is POST, we will update the user's information
-    if request.method == "POST":
+def profile_view(request, username):
+    # this is the user whose profile we want to see
+    
+    profile_user = get_object_or_404(User, username=username)
+    #this is to check if the user is trying to view their own profile or someone else's profile
+    if request.method == 'POST':
+        # forms to update the user and profile information on the profile page
         u_form = UserUpdateForm(request.POST, instance=request.user)
-        p_form = ProfileUpdateForm(request.POST, instance=request.user.profile)
-
+        p_form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user.profile)
+        #this is to check if the forms are valid and if they are then save the changes to the user and profile information 
         if u_form.is_valid() and p_form.is_valid():
             u_form.save()
-            p_form.save()
-            messages.success(request, "Your account has been updated successfully")
-            return redirect('profile')
-    #if the request method is not POST, we will create the forms with the current user's information
+            p_form.save()   
+            messages.success(request, "Your changes have been saved!")
+            return redirect('profile', username=request.user.username)
     else:
-        u_form = UserUpdateForm(instance=request.user)
-        p_form = ProfileUpdateForm(instance=request.user.profile)
-    # they cannot follow themselves, so always false
+        # forms to display when simply viewing the profile
+        u_form = UserUpdateForm(instance=profile_user)
+        p_form = ProfileUpdateForm(instance=profile_user.profile)
+
+    # Posts by this user counts
+    posts = Post.objects.filter(user=profile_user).order_by('-created_at')
+    posts_count = posts.count()
+
+    # Followers and the Following counts
+    followers_count = Follow.objects.filter(following=profile_user).count()
+    following_count = Follow.objects.filter(follower=profile_user).count()
+
+    # Check if current user follows this profile
+    is_following = Follow.objects.filter(
+        follower=request.user,
+        following=profile_user
+    ).exists()
+
+    # this is for the forms to update the user and profile information on the profile page
     return render(request, 'profile.html', {
-        'u_form': u_form,#this is for the user update form
-        'p_form': p_form,#this is for the profile update form
-        'profile_user': profile_user,#this is for the profile user
-        'followers_count': followers_count,#this is for the followers count
-        'following_count': following_count,#this is fo rthe following count
-        'is_following': False,#user cannot follow themselves so always false
+        'profile_user': profile_user,
+        'posts': posts,
+        'posts_count': posts_count,
+        'followers_count': followers_count,
+        'following_count': following_count,
+        'is_following': is_following,
+        'u_form': u_form,
+        'p_form': p_form,
     })
+#####################################################################################################
+@login_required
+def my_profile_redirect(request):
+    return redirect('profile', username=request.user.username)
 
 #####################################################################################################
-#added this 
+#this is the login view which will authenticate the user and log them in
 def login_view(request):
     if request.method == "POST":
         username = request.POST.get("username")
         password = request.POST.get("password")
-
+        #this is going to the authenticate func to check if the username and password are correct
         user = authenticate(request, username=username, password=password)
-
-        if user is not None:
-            login(request, user)
-            return redirect('main_home') 
+    #if the user is autheticated then the log in will direct them to the main home page else it wont unless they enter the correct username and password
+    if user is not None:
+        login(request, user)
+        return redirect('main_home') 
     return render(request, 'login.html')
 
 #####################################################################################################
@@ -160,6 +189,7 @@ def followers_lists(request, username):
         'followers': followers,
         
     })
+#####################################################################################################
 #this will be the following view for the user to direct them to the following list of users   
 def following_lists(request, username):
     list_users = get_object_or_404(User, username=username)#this is the user whose followers we want to see
@@ -169,4 +199,30 @@ def following_lists(request, username):
         'following': following,
         
     })
+#####################################################################################################
 
+def create_post(request):
+    if request.method == 'POST':
+        form = PostForm(request.POST, request.FILES)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.user = request.user   # ← attach the user
+            post.save()
+            return redirect('main_home')
+    else:
+        form = PostForm()
+
+    return render(request, 'create_post.html', {'form': form})
+#####################################################################################################
+def delete_post(request, post_id):
+    post = get_object_or_404(Post, id=post_id)#this is going to get the post object with the given post_id/return a 404 error if it doesn't exist
+
+    # Only allow the owner of the post to delete
+    if request.user == post.user:
+        post.delete()
+    #this will redirect to the profile page after d;eting the post
+    return redirect('profile', username=request.user.username)
+
+@login_required
+def my_profile_redirect(request):
+    return redirect('profile', username=request.user.username)

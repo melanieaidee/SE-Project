@@ -50,7 +50,7 @@ h2 {
     left: 5px;
     transform: translateY(-50%);
     font-size: 1em;
-    color: #fff;
+    /* color: #fff; */
     pointer-events: none;
     transition: .5s;
 }
@@ -69,7 +69,6 @@ h2 {
     border: none;
     outline: none;
     font-size: 1em;
-    color: #fff;
     padding: 0 35px 0 5px;
 }
 
