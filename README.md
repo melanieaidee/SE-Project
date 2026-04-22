@@ -31,4 +31,5 @@
 - Added a new page to create posts for the user to upload and share their pictures
 - When sharing new posts the posts will show in the main_home and the profile pages
 - Added the post count and showcase on the user Profile 
-- Update the enrolled selection for Users to know which campus each student is from
+- Updated the enrolled selection for Users to know which campus each student is from
+- Added the notification page
