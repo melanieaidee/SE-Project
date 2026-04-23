@@ -21,4 +21,4 @@
 - Updated profile page to show:  
   - Follow button  
   - Follower/Following counts
-
+# Phase 1.2 Merge both branches
