@@ -5,7 +5,7 @@
 
 {% for f in followers %}
     <div>
-        <a href="{% url 'user_profile' f.follower.username %}">
+        <a href="{% url 'profile' f.follower.username %}">
             {{ f.follower.username }}
         </a>
     </div>

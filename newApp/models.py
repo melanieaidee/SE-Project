@@ -33,5 +33,12 @@ class Post(models.Model):
     image = models.ImageField(upload_to='posts/', blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    likes = models.ManyToManyField(User, related_name='blogpost_like', blank=True)
+   
+    def likes_count(self):
+        return self.likes.count()
+    
+    #return the number of likes for a post
     def __str__(self):
-        return self.titl
+        return f"{self.user.username}'s post at {self.created_at}"
+    

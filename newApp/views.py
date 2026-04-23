@@ -66,40 +66,31 @@ def register(request):
 #this is a signal that will create a profile for the user when they have registered
 @login_required
 def profile_view(request, username):
-    # this is the user whose profile we want to see
-    
     profile_user = get_object_or_404(User, username=username)
-    #this is to check if the user is trying to view their own profile or someone else's profile
+#this is going to check if the request method is post then it will update the user and profile forms with the data from the request and save it
     if request.method == 'POST':
-        # forms to update the user and profile information on the profile page
         u_form = UserUpdateForm(request.POST, instance=request.user)
         p_form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user.profile)
-        #this is to check if the forms are valid and if they are then save the changes to the user and profile information 
         if u_form.is_valid() and p_form.is_valid():
             u_form.save()
-            p_form.save()   
+            p_form.save()
             messages.success(request, "Your changes have been saved!")
             return redirect('profile', username=request.user.username)
     else:
-        # forms to display when simply viewing the profile
         u_form = UserUpdateForm(instance=profile_user)
         p_form = ProfileUpdateForm(instance=profile_user.profile)
-
-    # Posts by this user counts
+#this is going to get all the posts for the user and order them by the created_at field
     posts = Post.objects.filter(user=profile_user).order_by('-created_at')
     posts_count = posts.count()
-
-    # Followers and the Following counts
+#this is going to get the number of followers/following for the user and check if the current user is followirng or not
     followers_count = Follow.objects.filter(following=profile_user).count()
     following_count = Follow.objects.filter(follower=profile_user).count()
 
-    # Check if current user follows this profile
     is_following = Follow.objects.filter(
         follower=request.user,
         following=profile_user
     ).exists()
 
-    # this is for the forms to update the user and profile information on the profile page
     return render(request, 'profile.html', {
         'profile_user': profile_user,
         'posts': posts,
@@ -110,6 +101,7 @@ def profile_view(request, username):
         'u_form': u_form,
         'p_form': p_form,
     })
+
 #####################################################################################################
 @login_required
 def my_profile_redirect(request):
@@ -157,27 +149,6 @@ def follow_view(request, username):
     return redirect("user_profile", username=username)
 
 #####################################################################################################
-#this is the user profile view which will show the user's profile and the follow button
-def user_profile(request, username):
-    profile_user = get_object_or_404(User, username=username)
-
-    is_following = Follow.objects.filter(
-        follower=request.user,
-        following=profile_user
-    ).exists()
-#count the number of followers and following for the user whose profile is being viewed
-    followers_count = profile_user.followers.count()
-    following_count = profile_user.following.count()
-    u_form = None
-    p_form = None
-
-    return render(request, 'profile.html', {
-        'profile_user': profile_user,
-        'is_following': is_following,
-        'followers_count': followers_count,
-        'following_count': following_count,
-    })
-#####################################################################################################
 #will separate the followers and following lists into their own views and templates easier not to mess it up
 #this will be the followers view for the user to direct them to the followers list of users   
 
@@ -214,15 +185,26 @@ def create_post(request):
 
     return render(request, 'create_post.html', {'form': form})
 #####################################################################################################
-def delete_post(request, post_id):
+def delete_post(request, *args, **kwargs):
+    post_id = kwargs.get('post_id')#this is going to get the post_id from the url and use it to get the post object that we want to delete
     post = get_object_or_404(Post, id=post_id)#this is going to get the post object with the given post_id/return a 404 error if it doesn't exist
 
     # Only allow the owner of the post to delete
     if request.user == post.user:
         post.delete()
+
     #this will redirect to the profile page after d;eting the post
     return redirect('profile', username=request.user.username)
-
+#####################################################################################################
 @login_required
 def my_profile_redirect(request):
     return redirect('profile', username=request.user.username)
+#####################################################################################################
+def like_post(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+    if request.user in post.likes.all():
+        post.likes.remove(request.user)  # Unlike the post
+    else:
+        post.likes.add(request.user)  # Like the post
+    #will be on the profile as well as in the main_home
+    return redirect(request.META.get('HTTP_REFERER', 'main_home'))

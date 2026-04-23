@@ -148,7 +148,17 @@
                                 <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
                             </form>
                         {% endif %}
-
+                        <form action="{% url 'like_post' post.id %}" method="POST" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm btn-outline-primary">
+                                {% if request.user in post.likes.all %}
+                                    Unlike
+                                {% else %}
+                                    Like
+                                {% endif %}
+                                ({{ post.likes_count }})
+                            </button>
+                        </form>
                     </div>
                 </div>
             {% empty %}
