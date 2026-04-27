@@ -1,2 +1,83 @@
-<!-- chat user to user not groups  -->
- 
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'chats.css' %}">
+<div class="chat-wrapper">
+
+    <!-- Header -->
+    <div class="chat-header">
+        <a href="{% url 'profile' other_user.username %}" class="chat-header-user">
+            {{ other_user.username }}
+        </a>
+    </div>
+
+    <!-- Message Request -->
+    {% if not is_mutual %}
+    <div class="message-request">
+        <p><strong>Message Request</strong></p>
+        <p>You and {{ other_user.username }} must follow each other to chat.</p>
+
+        {% if not follows_other %}
+        <a href="{% url 'follow_view' other_user.username %}" class="follow-btn">
+            Follow {{ other_user.username }}
+        </a>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    <!-- Messages -->
+    <div class="messages-area" id="messages-area">
+        {% if messages %}
+            {% for msg in messages %}
+            <div class="chat-bubble {% if msg.sender == request.user %}sent{% else %}received{% endif %}">
+                
+                <a href="{% url 'profile' msg.sender.username %}" class="bubble-username">
+                    {{ msg.sender.username }}
+                </a>
+
+                <div class="bubble-text">
+                    {{ msg.body }}
+                </div>
+
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-chat">
+                Start your conversation with {{ other_user.username }}
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Input -->
+    <form method="POST"
+          action="{% url 'send_message' other_user.id %}"
+          class="chat-input-area">
+        {% csrf_token %}
+
+        <input
+            type="text"
+            name="body"
+            class="chat-input"
+            placeholder="Type a message..."
+            {% if not is_mutual %}disabled{% endif %}
+        >
+
+        <button
+            type="submit"
+            class="send-btn"
+            {% if not is_mutual %}disabled{% endif %}
+        >
+            ➤
+        </button>
+    </form>
+
+</div>
+
+<!-- Auto scroll to latest message -->
+<script>
+    const messagesArea = document.getElementById("messages-area");
+    messagesArea.scrollTop = messagesArea.scrollHeight;
+</script>
+
+{% endblock %}

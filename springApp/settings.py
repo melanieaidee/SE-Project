@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'newApp.apps.NewappConfig',
     'springApp',
+    'rest_framework',
+    
 ]
 #will go to NewApp -> then apps.py -> NewappConfig
 MIDDLEWARE = [
@@ -123,3 +125,7 @@ LOGIN_REDIRECT_URL = 'main_home' #instead of home, will redirect to exclusive ho
 AUTH_USER_MODEL = 'auth.User' 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+REST_FRAMEWORK = {
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": 20,
+}

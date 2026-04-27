@@ -1,15 +1,18 @@
-from django.urls import path, include
-from . import views
+from django.urls import path
 from django.contrib.auth import views as auth_views
-from newApp import views
 from django.conf import settings
 from django.conf.urls.static import static
-
+from . import views
+from .views import (
+    NotificationListView,
+    MarkNotificationReadView,
+    notifications_page,   
+)
 urlpatterns = [
     path('', views.home, name='home'),
     path('register/', views.register, name='register'),
     path('profile/', views.my_profile_redirect, name='my_profile'),
-    path('profile/<str:username>/', views.profile_view, name='profile'),
+    path("profile/<str:username>/", views.profile_view, name="profile"),
     path('login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
     path('logout/', views.logout_view, name='logout'),
     path('main_home/', views.main_home, name='main_home'),
@@ -19,11 +22,17 @@ urlpatterns = [
     path('create/', views.create_post, name='create_post'),
     path('delete/<int:post_id>/', views.delete_post, name='delete_post'),
     path('like/<int:post_id>/', views.like_post, name='like_post'),
+    path("inbox/", views.users_list, name="users_list"),
+    path("chat/<int:user_id>/", views.chat_view, name="chat"),
+    path("send/<int:user_id>/", views.send_message, name="send_message"),
+    ## Notifications API (JSON)
+    path('notifications/', NotificationListView.as_view(), name='notifications-list'),
+    # Notifications HTML page
+    path("notifications-page/", notifications_page, name="notifications-page"),
+    # Mark notification as read
+    path('notifications/<int:pk>/read/', MarkNotificationReadView.as_view(), name='mark-notification-read'),
 ]
 
-#this is for the media files to be served during development
+# Serve media files during development
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
-
-

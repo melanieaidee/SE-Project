@@ -1,0 +1,25 @@
+.custom-alert {
+    margin-bottom: 20px;
+}
+
+.card-title {
+    font-weight: bold;
+}
+
+.card-body p {
+    margin-bottom: 10px;
+}
+
+.btn-outline-secondary {
+    padding: 5px 12px;
+    font-size: 14px;
+}
+
+.btn-outline-primary {
+    padding: 5px 12px;
+    font-size: 14px;
+}
+
+img {
+    border-radius: 10px;
+}

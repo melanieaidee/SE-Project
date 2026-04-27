@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User 
+
 #we can create models like spotify for example, you need the name of the song
 #lyrics, lenght of the song, album....
 #just like our user is our model
@@ -27,7 +28,7 @@ class Follow(models.Model):
 
     def __str__(self):
         return f"{self.follower.username} follows {self.following.username}"
-    
+
 class Post(models.Model):
     content = models.TextField()
     image = models.ImageField(upload_to='posts/', blank=True, null=True)
@@ -41,4 +42,31 @@ class Post(models.Model):
     #return the number of likes for a post
     def __str__(self):
         return f"{self.user.username}'s post at {self.created_at}"
+    #this will be the function delete post that will remove the post and image from the database
+    def delete(self,*arg,**kwargs):
+        #deletes the image file from the vs storage when the post is deleted
+        if self.image:
+            self.image.delete(save=False)
+        super().delete(*arg,**kwargs)
+#this is the message model for the functuonality of sending message only between users no group chat
+class Message(models.Model):
+    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name="sent_messages")
+    receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name="received_messages")
+    body = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+    is_read = models.BooleanField(default=False)
     
+    class Meta:
+        ordering = ['timestamp']
+
+    def __str__(self):
+        return f"{self.sender} → {self.receiver}: {self.body[:20]}"
+#api for notifications
+class Notification(models.Model):
+    recipient = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notifications')
+    message = models.TextField()
+    is_read = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Notification for {self.recipient.username}: {self.message[:20]}"

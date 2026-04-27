@@ -1,19 +1,19 @@
-from urllib import request
-from django.shortcuts import render, redirect
-from django.contrib.auth.forms import UserCreationForm
+# Django core imports
 from django.contrib import messages
-from .forms import UserUpdateForm, ProfileUpdateForm
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import authenticate, login # will be exclusive 
-from django.contrib.auth import logout
 from django.contrib.auth.models import User
-from django.shortcuts import redirect, get_object_or_404
-from .models import Follow 
-from .forms import PostForm #added this for the post form
-from .models import Post #added this for the post model
-from django.shortcuts import get_object_or_404, redirect
-from django.shortcuts import redirect
-
+from django.shortcuts import render, redirect, get_object_or_404
+# Forms
+from .forms import UserUpdateForm, ProfileUpdateForm, PostForm
+# Models
+from .models import Follow, Post, Message, Notification
+# Django REST Framework
+from rest_framework import generics, permissions, status
+from rest_framework.views import APIView
+from rest_framework.response import Response
+# Serializers
+from .serializers import NotificationSerializer
 #####################################################################################################
 #this is the home view which will be the page before login
 def home(request):
@@ -57,10 +57,10 @@ def register(request):
             email=email,
             password=password1
         )
-
+        #this will show message that it worked and then redirect to the login page
         messages.success(request, "Account created successfully")
         return redirect('login')
-
+    #will render the signup page if the request method is not post
     return render(request, 'signup.html')
 #####################################################################################################
 #this is a signal that will create a profile for the user when they have registered
@@ -102,10 +102,6 @@ def profile_view(request, username):
         'p_form': p_form,
     })
 
-#####################################################################################################
-@login_required
-def my_profile_redirect(request):
-    return redirect('profile', username=request.user.username)
 
 #####################################################################################################
 #this is the login view which will authenticate the user and log them in
@@ -113,14 +109,18 @@ def login_view(request):
     if request.method == "POST":
         username = request.POST.get("username")
         password = request.POST.get("password")
-        #this is going to the authenticate func to check if the username and password are correct
-        user = authenticate(request, username=username, password=password)
-    #if the user is autheticated then the log in will direct them to the main home page else it wont unless they enter the correct username and password
-    if user is not None:
-        login(request, user)
-        return redirect('main_home') 
-    return render(request, 'login.html')
+        #here is the authenticaton of the user with the given username and password 
+        user = authenticate(
+            request,
+            username=username,
+            password=password
+        )
+        #if the user is authenticated then log them in and redirect to the main home page
+        if user is not None:
+            login(request, user)
+            return redirect('main_home')
 
+    return render(request, 'login.html')
 #####################################################################################################
 #this is the logout view which will log the user out and redirect to home page
 def logout_view(request):
@@ -146,8 +146,7 @@ def follow_view(request, username):
             following=user_to_follow #this is the user they want to follow
         )
 #redirect to the profile page
-    return redirect("user_profile", username=username)
-
+    return redirect("profile", username=username)
 #####################################################################################################
 #will separate the followers and following lists into their own views and templates easier not to mess it up
 #this will be the followers view for the user to direct them to the followers list of users   
@@ -171,13 +170,13 @@ def following_lists(request, username):
         
     })
 #####################################################################################################
-
+#this is to create a post that they can upload an image and write a caption that will later display on the main home page 
 def create_post(request):
     if request.method == 'POST':
         form = PostForm(request.POST, request.FILES)
         if form.is_valid():
             post = form.save(commit=False)
-            post.user = request.user   # ← attach the user
+            post.user = request.user  
             post.save()
             return redirect('main_home')
     else:
@@ -206,5 +205,123 @@ def like_post(request, post_id):
         post.likes.remove(request.user)  # Unlike the post
     else:
         post.likes.add(request.user)  # Like the post
+        Notification.objects.create(
+            recipient=post.user,
+            message=f"{request.user.username} liked your post."
+        )
     #will be on the profile as well as in the main_home
     return redirect(request.META.get('HTTP_REFERER', 'main_home'))
+#####################################################################################################
+#this is the user_list for that will show all the users except the curretn user 
+@login_required
+def users_list(request):
+    users = User.objects.filter(is_superuser=False, is_staff=False).exclude(id=request.user.id)
+    return render (request, "users_list.html", {"users": users})
+#######################################################################################################
+#this is the chat that will show the messages between the current user and the other user that they are messaging with and also check if 
+#they are following each other or not so that if not it will show a message that they need to follow each other 
+@login_required
+def chat_view(request, user_id):
+    other_user = get_object_or_404(User, id=user_id)
+
+    if other_user == request.user:
+        return redirect("main_home")
+
+    follows_other = Follow.objects.filter(
+        follower=request.user,
+        following=other_user
+    ).exists()
+
+    other_follows = Follow.objects.filter(
+        follower=other_user,
+        following=request.user
+    ).exists()
+
+    is_mutual = follows_other and other_follows
+    #this is going to get all the messages between the curretn user and the other user
+    #with the order of the timestamp to show the messages in the order they were sent
+    chat_messages = Message.objects.filter(
+        sender__in=[request.user, other_user],
+        receiver__in=[request.user, other_user]
+    ).order_by("timestamp")
+
+    return render(request, "chat.html", {
+        "other_user": other_user,
+        "messages": chat_messages,
+        "is_mutual": is_mutual,
+        "follows_other": follows_other,
+        "other_follows": other_follows,
+    })
+#########################################################################################################
+#this is to send the message between the current user and the other user that they are messaging with and redirect them to the chat page after sending the message
+@login_required
+def send_message(request, user_id):
+    other_user = get_object_or_404(User, id=user_id)
+
+    if other_user == request.user:
+        return redirect("main_home")
+
+    follows_other = Follow.objects.filter(
+        follower=request.user,
+        following=other_user
+    ).exists()
+
+    other_follows = Follow.objects.filter(
+        follower=other_user,
+        following=request.user
+    ).exists()
+
+    if not (follows_other and other_follows):
+        messages.error(
+            request,
+            "You must follow each other to send messages."
+        )
+        return redirect("chat", user_id=user_id)
+
+    if request.method == "POST":
+        body = request.POST.get("body", "").strip()
+
+        if body:
+            Message.objects.create(
+                sender=request.user,
+                receiver=other_user,
+                body=body
+            )
+
+    return redirect("chat", user_id=user_id)
+#######################################################################################################
+#this is the api view for teh notification list that will return the notifications
+#for the current user in json format and also check if the user is authenticated or not to acess this api
+class NotificationListView(generics.ListAPIView):
+    serializer_class = NotificationSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return Notification.objects.filter(
+            recipient=self.request.user
+        ).order_by('-created_at')
+#######################################################################################################
+#this is for marking the notification as read when the user clicks on the notification and it will 
+# update the is_read field to true and return a response that the notification has been marked as read 
+# or if the notification is not found it will return a response that the notification is not found(got help from ai and other source)
+# link: https://medium.com/@ytryqzdd/implementing-notifications-in-django-keep-your-users-informed-instantly-0523c1226900
+class MarkNotificationReadView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    def post(self, request, pk):
+        try:
+            notification = Notification.objects.get(pk=pk, recipient=request.user)
+            notification.is_read = True
+            notification.save()
+            return Response({'status': 'notification marked as read'}, status=status.HTTP_200_OK)
+
+        except Notification.DoesNotExist:
+            return Response({'error': 'notification not found'}, status=status.HTTP_404_NOT_FOUND)
+#######################################################################################################
+#this is the view for the notifications page that will show the notificatons 
+#for the curretn user in the html page and order them by the created_at field to show the most recent notifications 
+
+def notifications_page(request):
+    notifications = Notification.objects.filter(
+        recipient=request.user
+    ).order_by('-created_at')
+    return render(request, "notifications.html", {"notifications": notifications})

@@ -9,7 +9,7 @@
     <!-- RIGHT SIDE -->
     <div class="nav-right">
 
-        <!-- PLUS BUTTON FOR CREATE POST -->
+        <!-- CREATE POST BUTTON -->
         {% if request.user.is_authenticated %}
         <a href="{% url 'create_post' %}" class="create-btn" title="Create Post">
             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="white" class="bi bi-plus-circle" viewBox="0 0 16 16">
@@ -19,14 +19,23 @@
         </a>
         {% endif %}
 
-        <!-- Always shows Home -->
+        <!-- HOME LINK -->
         {% if request.resolver_match.url_name != 'home' %}
         <a href="{% url 'main_home' %}">Home</a>
         {% endif %}
 
         {% if request.user.is_authenticated %}
+
+            <!-- NOTIFICATION ICON -->
+            <a href="{% url 'notifications-page' %}">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="white" class="bi bi-bell" viewBox="0 0 16 16">
+                    <path d="M8 16a2 2 0 0 0 1.985-1.75H6.015A2 2 0 0 0 8 16m.104-14.042a1 1 0 1 0-2.208 0A5.002 5.002 0 0 0 3 6c0 1.098-.5 2.598-1.528 3.854-.287.36-.472.81-.472 1.29 0 .552.448 1 1 1h12a1 1 0 0 0 1-1c0-.48-.185-.93-.472-1.29C13.5 8.598 13 7.098 13 6a5.002 5.002 0 0 0-3.896-4.042"/>
+                </svg>
+            </a>
+
             <a href="{% url 'profile' request.user.username %}">Profile</a>
             <a href="{% url 'logout' %}">Logout</a>
+
         {% else %}
             <a href="{% url 'login' %}">Login</a>
         {% endif %}
@@ -71,4 +80,5 @@
     .create-btn:hover svg {
         transform: scale(1.15);
     }
+    
 </style>
