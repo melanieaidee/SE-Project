@@ -33,3 +33,8 @@
 - Added the post count and showcase on the user Profile 
 - Updated the enrolled selection for Users to know which campus each student is from
 - Added the notification page
+- Implemented the notification system
+- Created the model, built the API and added the notification page
+- Integrated notifications with post likes
+- Added the chat system
+- Fix bugs and organize static and other files
