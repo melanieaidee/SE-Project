@@ -2,14 +2,27 @@
 {% load static %}
 
 {% block content %}
-<link rel="stylesheet" href="{% static 'chats.css' %}">
+
+<!-- Force Edge + Chrome to load the newest CSS -->
+<link rel="stylesheet" href="{% static 'chats.css' %}?v=10">
+
 <div class="chat-wrapper">
 
     <!-- Header -->
     <div class="chat-header">
+
+        <!-- Profile Picture (always fixed size) -->
+        <img 
+            src="{{ other_user.profile.image.url }}" 
+            class="profile-pic-global profile-pic-chat"
+            alt="Profile Picture"
+        >
+
+        <!-- Username link -->
         <a href="{% url 'profile' other_user.username %}" class="chat-header-user">
             {{ other_user.username }}
         </a>
+
     </div>
 
     <!-- Message Request -->
@@ -28,16 +41,19 @@
 
     <!-- Messages -->
     <div class="messages-area" id="messages-area">
+
         {% if messages %}
             {% for msg in messages %}
             <div class="chat-bubble {% if msg.sender == request.user %}sent{% else %}received{% endif %}">
-                
+
+                <!-- Username inside bubble -->
                 <a href="{% url 'profile' msg.sender.username %}" class="bubble-username">
                     {{ msg.sender.username }}
                 </a>
 
+                <!-- Message text -->
                 <div class="bubble-text">
-                    {{ msg.body }}
+                    {{ msg.body|urlize|safe }}
                 </div>
 
             </div>
@@ -47,6 +63,7 @@
                 Start your conversation with {{ other_user.username }}
             </div>
         {% endif %}
+
     </div>
 
     <!-- Input -->

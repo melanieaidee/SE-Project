@@ -1,0 +1,210 @@
+/* help from the ai */
+/* BACKGROUND */
+body {
+    background: #fff7f3;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+/* CONTAINER */
+.feed-container {
+    max-width: 650px;
+    margin: 0 auto;
+    padding-bottom: 40px;
+}
+
+/* CARD — add spacing between posts */
+.post-card {
+    border-radius: 16px;
+    border: 1px solid #ffe4d8;
+    background: white;
+    box-shadow: 0 6px 20px rgba(255, 122, 61, 0.08);
+    transition: 0.25s ease;
+    margin-bottom: 28px;
+}
+
+.post-card:hover {
+    transform: translateY(-3px);
+}
+
+/* ⭐ PROFILE PIC (feed posts) */
+.profile-pic-md {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: center;
+    flex-shrink: 0;
+}
+
+/* USERNAME */
+.username {
+    font-weight: 700;
+    transition: 0.2s;
+}
+
+.username:hover {
+    color: #ff7a3d;
+}
+
+/* TEXT */
+.post-text {
+    font-size: 1rem;
+    color: #444;
+    line-height: 1.6;
+    margin-bottom: 12px;
+}
+
+/* IMAGE WRAPPER */
+.post-image-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+/* IMAGE — slightly taller */
+.post-image {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    border-radius: 18px;
+    object-fit: cover;
+    max-height: 620px;
+    display: block;
+}
+
+/* COMMENTS */
+.comment {
+    display: flex;
+    gap: 6px;
+    padding: 6px 0;
+    font-size: 0.95rem;
+}
+
+.comment strong {
+    color: #ff7a3d;
+}
+
+.comment span {
+    color: #444;
+}
+
+/* NO COMMENTS */
+.no-comments {
+    color: #888;
+    font-size: 0.9rem;
+}
+
+/* VIEW COMMENTS */
+.view-all-comments {
+    font-size: 0.9rem;
+    color: #ff7a3d;
+    text-decoration: none;
+}
+
+.view-all-comments:hover {
+    text-decoration: underline;
+}
+
+/* BUTTONS */
+.btn-outline-primary {
+    border-color: #ff7a3d;
+    color: #ff7a3d;
+}
+
+.btn-outline-primary:hover {
+    background: #ff7a3d;
+    color: white;
+    border-color: #ff7a3d;
+}
+
+.btn-outline-secondary {
+    border-color: #ffd3c2;
+    color: #ff7a3d;
+}
+
+.btn-outline-secondary:hover {
+    background: #fff1ea;
+}
+
+/* FLOATING MESSAGE BUTTON */
+.inbox-btn {
+    position: fixed;
+    bottom: 22px;
+    right: 22px;
+    width: 68px;
+    height: 68px;
+    background: #ff7a3d;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.9rem;
+    box-shadow: 0 8px 20px rgba(255, 122, 61, 0.35);
+    z-index: 999;
+    transition: 0.2s ease;
+    text-decoration: none;
+}
+
+.inbox-btn:hover {
+    transform: scale(1.08);
+    background: #ff5f1f;
+}
+
+/* ANIMATION */
+.fade-in {
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ------------------------------------------------------ */
+/* ⭐ INBOX LIST (users_list.html) */
+/* ------------------------------------------------------ */
+
+.inbox-item {
+    display: flex;
+    align-items: center;
+    padding: 14px 18px;
+    background: white;
+    border-radius: 16px;
+    margin-bottom: 14px;
+    text-decoration: none;
+    color: #333;
+    box-shadow: 0 4px 14px rgba(255, 122, 61, 0.12);
+    transition: 0.2s ease;
+}
+
+.inbox-item:hover {
+    background: #fff1ea;
+    transform: translateX(4px);
+}
+
+/* ⭐ PROFILE PIC IN INBOX (uses global medium size) */
+.inbox-profile-pic,
+.profile-pic-md {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: center;
+    margin-right: 14px;
+    border: 2px solid #ffd3c2;
+}
+
+/* USERNAME */
+.inbox-username {
+    font-size: 18px;
+    font-weight: 600;
+    flex-grow: 1;
+}
+
+/* ARROW */
+.inbox-arrow {
+    font-size: 22px;
+    color: #ff7a3d;
+}

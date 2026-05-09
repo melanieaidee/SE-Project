@@ -16,6 +16,27 @@
         border-radius: 8px;
         margin-bottom: 15px;
         border: 1px solid #ddd;
+        position: relative;
+    }
+
+    .notif-message {
+        font-size: 16px;
+        color: #333;
+    }
+
+    .notif-delete-btn {
+        position: absolute;
+        right: 15px;
+        top: 10px;
+        background: none;
+        border: none;
+        font-size: 20px;
+        color: #888;
+        cursor: pointer;
+    }
+
+    .notif-delete-btn:hover {
+        color: #000;
     }
 
     .empty {
@@ -32,7 +53,12 @@
     {% if notifications %}
         {% for notif in notifications %}
             <div class="notif-card">
-                {{ notif.message }}
+                <span class="notif-message">{{ notif.message }}</span>
+
+                <form action="{% url 'mark-notification-read' notif.id %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="notif-delete-btn">✕</button>
+                </form>
             </div>
         {% endfor %}
     {% else %}

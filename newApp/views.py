@@ -4,16 +4,18 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect, get_object_or_404
+
 # Forms
 from .forms import UserUpdateForm, ProfileUpdateForm, PostForm
 # Models
-from .models import Follow, Post, Message, Notification
+from .models import Follow, Post, Message, Notification, Comment
 # Django REST Framework
 from rest_framework import generics, permissions, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 # Serializers
 from .serializers import NotificationSerializer
+
 #####################################################################################################
 #this is the home view which will be the page before login
 def home(request):
@@ -21,7 +23,7 @@ def home(request):
 #####################################################################################################
 #added main_home view this will be the main page after login 
 def main_home(request):
-    posts = Post.objects.all().order_by('-created_at')
+    posts = Post.objects.all().order_by('-created_at').prefetch_related('comments')
     return render(request, 'main_home.html', {'posts': posts})
 #####################################################################################################
 def register(request):
@@ -290,6 +292,7 @@ def send_message(request, user_id):
 
     return redirect("chat", user_id=user_id)
 #######################################################################################################
+#basically the api will update the notifications for the current user and return them in json format to use in the front end and will show you in real time when you get a new notification
 #this is the api view for teh notification list that will return the notifications
 #for the current user in json format and also check if the user is authenticated or not to acess this api
 class NotificationListView(generics.ListAPIView):
@@ -319,9 +322,67 @@ class MarkNotificationReadView(APIView):
 #######################################################################################################
 #this is the view for the notifications page that will show the notificatons 
 #for the curretn user in the html page and order them by the created_at field to show the most recent notifications 
-
+@login_required
 def notifications_page(request):
     notifications = Notification.objects.filter(
-        recipient=request.user
+        recipient=request.user,
+        is_read=False
     ).order_by('-created_at')
-    return render(request, "notifications.html", {"notifications": notifications})
+
+    return render(request, 'notifications.html', {'notifications': notifications})
+#######################################################################################################
+#this will mark as read the notification when the user clicks on it and 
+# then redirect to the notifications page after marking it as read and also check if the notification exists or not and 
+# if it belongs to the current user or not to prevent unauthorized access to other user's notifications
+@login_required
+def mark_notification_read(request, pk):
+    notif = get_object_or_404(Notification, pk=pk, recipient=request.user)
+    notif.is_read = True
+    notif.save()
+    return redirect('notifications-page')
+
+###########################################################################################
+#this is the view for adding a  comment to a post and creating a notification for the 
+# post owner when someone comments on their post and then redirecting to the main home page after adding the comment
+@login_required
+def add_comment(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+    text = request.POST.get("text")
+
+    Comment.objects.create(
+        user=request.user,
+        post=post,
+        text=text
+    )
+
+    # Create notification
+    if request.user != post.user:
+        Notification.objects.create(
+            recipient=post.user,
+            message=f"{request.user.username} commented on your post."
+        )
+    #redirects back to comment page
+    return redirect('comments_page', post_id=post.id)
+###########################################################################################
+@login_required
+def comments_page(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+    comments = post.comments.all()
+
+    return render(request, 'comments_page.html', {
+        'post': post,
+        'comments': comments
+    })
+###########################################################################################
+#this is the view for sharing a post to another user through the chat by sending a message with the link to the post 
+# and the username of the user who shared it and then redirecting to the chat page with that user
+@login_required
+def share_post_to_user(request, post_id, receiver_id):
+    post = get_object_or_404(Post, id=post_id)
+    receiver = get_object_or_404(User, id=receiver_id)
+
+    Message.objects.create(
+        sender=request.user,
+        receiver=receiver,
+        body=f"{request.user.username} shared a post with you: http://127.0.0.1:8000/main_home/#post-{post.id}")
+    return redirect("chat", user_id=receiver.id)

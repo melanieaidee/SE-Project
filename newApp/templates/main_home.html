@@ -2,51 +2,116 @@
 {% load static %}
 {% block content %}
 
-<link rel="stylesheet" href="{% static 'feed.css' %}">
+<link rel="stylesheet" href="{% static 'feeds.css' %}">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 
-<div class="feed-container">
+<div class="feed-container container mt-4">
 
     {% for post in posts %}
-    <div class="post-card fade-in">
+    <div id="post-{{ post.id }}" class="card mb-4 shadow-sm post-card fade-in">
 
-        <!-- Header -->
-        <div class="post-header">
-            <div class="profile-pic"></div>
-            <div class="username">{{ post.user.username }}</div>
-        </div>
+        <div class="card-body">
 
-        <!-- Text -->
-        <div class="post-text">
-            {{ post.content }}
-        </div>
+            <!-- USER HEADER -->
+            <div class="d-flex align-items-center mb-3">
+                <img src="{{ post.user.profile.image.url }}" class="profile-pic-global profile-pic-md">
 
-        <!-- Image -->
-        {% if post.image %}
-        <div class="post-image-wrapper">
-            <img src="{{ post.image.url }}" class="post-image" alt="Post Image">
-        </div>
-        {% endif %}
 
-        <!-- Like Button -->
-        <form action="{% url 'like_post' post.id %}" method="POST" style="display:inline;">
-            {% csrf_token %}
-            <button type="submit" class="btn btn-sm btn-outline-primary">
-                {% if request.user in post.likes.all %}
-                    Unlike
+                <div class="ms-2">
+                    <a href="{% url 'profile' post.user.username %}"
+                       class="fw-bold text-dark text-decoration-none username">
+                        {{ post.user.username }}
+                    </a>
+
+                    <div class="text-muted small">
+                        {{ post.created_at }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- POST TEXT -->
+            {% if post.content %}
+            <p class="post-text">{{ post.content }}</p>
+            {% endif %}
+
+            <!-- POST IMAGE -->
+            {% if post.image %}
+            <div class="post-image-wrapper">
+                <img src="{{ post.image.url }}" class="post-image">
+            </div>
+            {% endif %}
+
+            <!-- COMMENTS -->
+            <div class="comments-section mt-3">
+
+                {% if post.comments.all %}
+                    <div class="comment">
+                        <strong>{{ post.comments.all.0.user.username }}</strong>
+                        <span>{{ post.comments.all.0.text }}</span>
+                    </div>
+
+                    {% if post.comments.all|length > 1 %}
+                        <a href="{% url 'comments_page' post.id %}" class="view-all-comments">
+                            View all {{ post.comments.all|length }} comments
+                        </a>
+                    {% endif %}
+
                 {% else %}
-                    Like
+                    <div class="no-comments">No comments yet</div>
                 {% endif %}
-                ({{ post.likes_count }})
-            </button>
-        </form>
 
+            </div>
+
+            <!-- ACTIONS -->
+            <div class="d-flex gap-2 mt-3 flex-wrap">
+
+                <!-- LIKE -->
+                <form action="{% url 'like_post' post.id %}" method="POST">
+                    {% csrf_token %}
+                    <button class="btn btn-sm btn-outline-primary like-btn">
+                        {% if request.user in post.likes.all %}
+                            <i class="bi bi-heart-fill"></i>
+                        {% else %}
+                            <i class="bi bi-heart"></i>
+                        {% endif %}
+                        {{ post.likes_count }}
+                    </button>
+                </form>
+
+                <!-- COMMENT -->
+                <a href="{% url 'comments_page' post.id %}" class="btn btn-sm btn-outline-secondary">
+                    <i class="bi bi-chat"></i> Comment
+                </a>
+
+                <!-- SHARE -->
+                <div class="dropdown">
+                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
+                        <i class="bi bi-send-fill"></i> Share
+                    </button>
+
+                    <ul class="dropdown-menu">
+                        {% for f in request.user.following.all %}
+                        <li>
+                            <a class="dropdown-item"
+                               href="{% url 'share-post' post.id f.following.id %}">
+                                {{ f.following.username }}
+                            </a>
+                        </li>
+                        {% empty %}
+                        <li><span class="dropdown-item-text">No followers</span></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+            </div>
+
+        </div>
     </div>
     {% endfor %}
 
 </div>
 
-<!-- Floating Inbox Button -->
+<!-- FLOATING MESSAGE BUTTON -->
 <a href="{% url 'users_list' %}" class="inbox-btn">
     <i class="bi bi-envelope-fill"></i>
 </a>

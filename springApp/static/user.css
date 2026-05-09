@@ -1,3 +1,4 @@
+/* help from the ai */
 .custom-alert {
     margin-bottom: 20px;
 }
@@ -10,16 +11,78 @@
     margin-bottom: 10px;
 }
 
-.btn-outline-secondary {
-    padding: 5px 12px;
-    font-size: 14px;
-}
-
+.btn-outline-secondary,
 .btn-outline-primary {
     padding: 5px 12px;
     font-size: 14px;
 }
 
+/* Default rounding for all images */
 img {
     border-radius: 10px;
+}
+
+/* ------------------------------------------------------ */
+/* ⭐ GLOBAL PROFILE PICTURE SYSTEM */
+/* ------------------------------------------------------ */
+
+/* Base style for ALL profile pictures */
+.profile-pic-global {
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+}
+
+/* Large (Profile Page) */
+.profile-pic-lg {
+    width: 120px;
+    height: 120px;
+    margin: 0 auto 15px auto;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+/* Medium (Feed, Inbox, User Lists) */
+.profile-pic-md {
+    width: 45px;
+    height: 45px;
+}
+
+/* Small (Comments) */
+.profile-pic-sm {
+    width: 38px;
+    height: 38px;
+}
+
+/* Chat Header */
+.profile-pic-chat {
+    width: 75px;
+    height: 75px;
+    border: 3px solid rgba(255,255,255,0.6);
+    margin-bottom: 10px;
+}
+
+/* ------------------------------------------------------ */
+/* LEGACY SUPPORT (old classes now mapped to new system) */
+/* ------------------------------------------------------ */
+
+/* Profile page main picture */
+.profile-header-pic {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+    margin: 0 auto 15px auto;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+/* Small profile pic next to posts */
+.post-profile-pic {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: center;
 }

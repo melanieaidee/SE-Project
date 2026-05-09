@@ -19,14 +19,23 @@
 
     <!-- Username title -->
     <h2 class="text-center mb-4">{{ profile_user.username }}'s Profile</h2>
+
     <div class="row justify-content-center">
         <div class="col-md-6">
+
+            <!-- PROFILE PICTURE ADDED HERE -->
+            <div class="text-center mb-3">
+                <img src="{{ profile_user.profile.image.url }}" 
+                     class="rounded-circle"
+                     style="width: 120px; height: 120px; object-fit: cover; object-position: center;">
+            </div>
+
             <!-- Profile info card -->
             <div class="card mb-4 shadow-sm">
                 <div class="card-body">
                     <h5 class="card-title">Profile Information</h5>
                     <hr>
-                    <!-- Name -->
+
                     <p><strong>Name:</strong>
                         {% if profile_user.first_name or profile_user.last_name %}
                             {{ profile_user.first_name }} {{ profile_user.last_name }}
@@ -34,7 +43,7 @@
                             Not provided
                         {% endif %}
                     </p>
-                    <!-- Bio -->
+
                     <p><strong>Bio:</strong>
                         {% if profile_user.profile.bio %}
                             {{ profile_user.profile.bio }}
@@ -42,7 +51,7 @@
                             No bio provided
                         {% endif %}
                     </p>
-                    <!-- Enrolled campus -->
+
                     <p><strong>Enrolled:</strong>
                         {% if profile_user.profile.enrolled %}
                             {{ profile_user.profile.get_enrolled_display }}
@@ -52,21 +61,21 @@
                     </p>
                 </div>
             </div>
+
             <!-- Stats + buttons row -->
             <div class="d-flex justify-content-around mb-3 text-center">
-                <!-- Posts count -->
                 <div>
                     <strong>{{ posts_count }}</strong><br>
                     <span>Posts</span>
                 </div>
-                <!-- Followers link -->
+
                 <a href="{% url 'followers_lists' profile_user.username %}" class="text-decoration-none text-dark">
                     <div>
                         <strong>{{ followers_count }}</strong><br>
                         <span>Followers</span>
                     </div>
                 </a>
-                <!-- Following link -->
+
                 <a href="{% url 'following_lists' profile_user.username %}" class="text-decoration-none text-dark">
                     <div>
                         <strong>{{ following_count }}</strong><br>
@@ -74,14 +83,12 @@
                     </div>
                 </a>
 
-                <!-- Message button (only for other users) -->
                 {% if request.user != profile_user %}
                     <a href="{% url 'chat' profile_user.id %}">
                         <button class="btn btn-outline-secondary">Message</button>
                     </a>
                 {% endif %}
 
-                <!-- Follow / Unfollow button (only for other users) -->
                 {% if request.user != profile_user %}
                     <form action="{% url 'follow_view' profile_user.username %}" method="POST" style="display:inline;">
                         {% csrf_token %}
@@ -94,14 +101,12 @@
                         </button>
                     </form>
                 {% endif %}
-
             </div>
 
             <!-- Edit profile (only for the owner) -->
             {% if request.user == profile_user %}
                 <hr>
 
-                <!-- Button to open edit form -->
                 <button class="btn btn-outline-primary w-100 mb-3"
                         type="button"
                         data-bs-toggle="collapse"
@@ -109,7 +114,6 @@
                     Edit Profile
                 </button>
 
-                <!-- Edit form -->
                 <div class="collapse" id="editProfileForm">
                     <div class="card card-body shadow-sm">
 
@@ -118,33 +122,34 @@
                         <form method="POST" enctype="multipart/form-data">
                             {% csrf_token %}
 
-                            <!-- First name -->
                             <div class="mb-3">
                                 <label class="form-label">First Name</label>
                                 {{ u_form.first_name }}
                             </div>
 
-                            <!-- Last name -->
                             <div class="mb-3">
                                 <label class="form-label">Last Name</label>
                                 {{ u_form.last_name }}
                             </div>
 
-                            <!-- Bio -->
                             <div class="mb-3">
                                 <label class="form-label">Bio</label>
                                 {{ p_form.bio }}
                                 <div class="form-text">Tell us a little about yourself</div>
                             </div>
 
-                            <!-- Enrolled -->
                             <div class="mb-3">
                                 <label class="form-label">Enrolled</label>
                                 {{ p_form.enrolled }}
                                 <div class="form-text">What campus are you enrolled in?</div>
                             </div>
 
-                            <!-- Save button -->
+                            <!-- PROFILE IMAGE FIELD ALREADY WORKS -->
+                            <div class="mb-3">
+                                <label class="form-label">Profile Picture</label>
+                                {{ p_form.image }}
+                            </div>
+
                             <button type="submit" class="btn btn-success w-100">Save Changes</button>
                         </form>
 
@@ -159,6 +164,15 @@
             {% for post in posts %}
                 <div class="card mb-3 shadow-sm">
                     <div class="card-body">
+
+                        <!-- PROFILE PIC NEXT TO POSTS -->
+                        <div class="d-flex align-items-center mb-2">
+                            <img src="{{ post.user.profile.image.url }}"
+                                 class="rounded-circle"
+                                 style="width: 40px; height: 40px; object-fit: cover; object-position: center;">
+
+                            <span class="ms-2 fw-bold">{{ post.user.username }}</span>
+                        </div>
 
                         <!-- Post text -->
                         <p class="card-text">{{ post.content }}</p>
@@ -191,6 +205,30 @@
                                 ({{ post.likes_count }})
                             </button>
                         </form>
+
+                        <!-- Comment button -->
+                        <a href="{% url 'comments_page' post.id %}" class="btn btn-sm btn-outline-secondary">
+                            Comment
+                        </a>
+
+                        <!-- Share button -->
+                        <div class="dropdown d-inline">
+                            <button class="btn btn-sm btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
+                                Share
+                            </button>
+
+                            <ul class="dropdown-menu">
+                                {% for f in request.user.following.all %}
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'share-post' post.id f.following.id %}">
+                                        {{ f.following.username }}
+                                    </a>
+                                </li>
+                                {% empty %}
+                                <li><span class="dropdown-item-text">No followers</span></li>
+                                {% endfor %}
+                            </ul>
+                        </div>
 
                     </div>
                 </div>
