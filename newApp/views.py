@@ -68,17 +68,9 @@ def register(request):
 def profile_view(request, username):
     profile_user = get_object_or_404(User, username=username)
 #this is going to check if the request method is post then it will update the user and profile forms with the data from the request and save it
-    if request.method == 'POST':
-        u_form = UserUpdateForm(request.POST, instance=request.user)
-        p_form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user.profile)
-        if u_form.is_valid() and p_form.is_valid():
-            u_form.save()
-            p_form.save()
-            messages.success(request, "Your changes have been saved!")
-            return redirect('profile', username=request.user.username)
-    else:
-        u_form = UserUpdateForm(instance=profile_user)
-        p_form = ProfileUpdateForm(instance=profile_user.profile)
+
+    u_form = UserUpdateForm(instance=profile_user)
+    p_form = ProfileUpdateForm(instance=profile_user.profile)
 #this is going to get all the posts for the user and order them by the created_at field
     posts = Post.objects.filter(user=profile_user).order_by('-created_at')
     posts_count = posts.count()
@@ -325,3 +317,18 @@ def notifications_page(request):
         recipient=request.user
     ).order_by('-created_at')
     return render(request, "notifications.html", {"notifications": notifications})
+#########################################################################################################
+#this is the view for the profile page that will show updated edits
+
+def edit_profile(request):
+    profile = request.user.profile
+
+    if request.method == "POST":
+        form = ProfileUpdateForm(request.POST, request.FILES, instance=profile)
+        if form.is_valid():
+            form.save()
+            return redirect('profile', request.user.username)
+    else:
+        form = ProfileUpdateForm(instance=profile)
+
+    return render(request, 'edit_profile.html', {'form': form})

@@ -17,6 +17,12 @@ class Profile(models.Model):
         choices=ENROLLED_CHOICES,
         default='ED'
     )
+
+    profile_picture = models.ImageField(
+        upload_to='profile_pics/',
+        default='defaultpfp.png'
+    )
+
     def __str__(self):
         return self.user.username
 #this is the follow model which will be used to create the follow and unfollow functionality
