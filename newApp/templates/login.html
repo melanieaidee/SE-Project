@@ -3,29 +3,24 @@
 <html lang="en">
 
 <head>
-  <link rel="stylesheet" href="{% static 'style.css' %}">
+  <link rel="stylesheet" href="{% static 'styles.css' %}">
 </head>
 
 <body>
 
-<section>
+<section class="login-section">
   <div class="login-box">
 
-    <!-- IMPORTANT: method POST + action to Django login -->
     <form method="POST" action="{% url 'login' %}">
       {% csrf_token %}
       <h2>Login</h2>
 
-      <!-- USERNAME FIELD -->
       <div class="input-box">
-        <span class="icon"><ion-icon name="person"></ion-icon></span>
         <input type="text" name="username" required>
         <label>Username</label>
       </div>
 
-      <!-- PASSWORD FIELD -->
       <div class="input-box">
-        <span class="icon"><ion-icon name="lock-closed"></ion-icon></span>
         <input type="password" name="password" required>
         <label>Password</label>
       </div>
@@ -39,9 +34,6 @@
 
   </div>
 </section>
-
-<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
-<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 
 </body>
 </html>

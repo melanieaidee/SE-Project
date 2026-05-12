@@ -239,7 +239,6 @@ def chat_view(request, user_id):
         following=request.user
     ).exists()
 
-    is_mutual = follows_other and other_follows
     #this is going to get all the messages between the curretn user and the other user
     #with the order of the timestamp to show the messages in the order they were sent
     chat_messages = Message.objects.filter(
@@ -250,7 +249,6 @@ def chat_view(request, user_id):
     return render(request, "chat.html", {
         "other_user": other_user,
         "messages": chat_messages,
-        "is_mutual": is_mutual,
         "follows_other": follows_other,
         "other_follows": other_follows,
     })
@@ -272,13 +270,6 @@ def send_message(request, user_id):
         follower=other_user,
         following=request.user
     ).exists()
-
-    if not (follows_other and other_follows):
-        messages.error(
-            request,
-            "You must follow each other to send messages."
-        )
-        return redirect("chat", user_id=user_id)
 
     if request.method == "POST":
         body = request.POST.get("body", "").strip()
@@ -386,3 +377,4 @@ def share_post_to_user(request, post_id, receiver_id):
         receiver=receiver,
         body=f"{request.user.username} shared a post with you: http://127.0.0.1:8000/main_home/#post-{post.id}")
     return redirect("chat", user_id=receiver.id)
+###########################################################################################

@@ -4,14 +4,14 @@
 {% block content %}
 
 <!-- Force Edge + Chrome to load the newest CSS -->
-<link rel="stylesheet" href="{% static 'chats.css' %}?v=10">
+<link rel="stylesheet" href="{% static 'chat.css' %}?v=10">
 
 <div class="chat-wrapper">
 
     <!-- Header -->
     <div class="chat-header">
 
-        <!-- Profile Picture (always fixed size) -->
+        <!-- Profile Picture -->
         <img 
             src="{{ other_user.profile.image.url }}" 
             class="profile-pic-global profile-pic-chat"
@@ -24,20 +24,6 @@
         </a>
 
     </div>
-
-    <!-- Message Request -->
-    {% if not is_mutual %}
-    <div class="message-request">
-        <p><strong>Message Request</strong></p>
-        <p>You and {{ other_user.username }} must follow each other to chat.</p>
-
-        {% if not follows_other %}
-        <a href="{% url 'follow_view' other_user.username %}" class="follow-btn">
-            Follow {{ other_user.username }}
-        </a>
-        {% endif %}
-    </div>
-    {% endif %}
 
     <!-- Messages -->
     <div class="messages-area" id="messages-area">
@@ -77,14 +63,9 @@
             name="body"
             class="chat-input"
             placeholder="Type a message..."
-            {% if not is_mutual %}disabled{% endif %}
         >
 
-        <button
-            type="submit"
-            class="send-btn"
-            {% if not is_mutual %}disabled{% endif %}
-        >
+        <button type="submit" class="send-btn">
             ➤
         </button>
     </form>

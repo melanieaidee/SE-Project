@@ -2,7 +2,51 @@
 
 {% block content %}
 {{ form.errors }}
-<div class="container mt-4" style="max-width: 600px;">
+
+<style>
+
+    body {
+        background: #e65c1c;
+    }
+
+    h2 {
+        color: white;
+        font-weight: bold;
+    }
+
+    .container {
+        max-width: 600px;
+    }
+
+    label {
+        color: white;
+        font-weight: 600;
+    }
+
+    .camera-btn {
+        background: #000;
+        color: #fff;
+        border: none;
+        padding: 10px 16px;
+        border-radius: 8px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        transition: 0.2s ease;
+    }
+
+    .camera-btn:hover {
+        background: #111;
+        transform: translateY(-2px);
+    }
+
+    .camera-btn svg {
+        fill: #fff;
+    }
+</style>
+
+<div class="container mt-4">
 
     <h2 class="mb-4">Create a New Post</h2>
 
@@ -15,26 +59,25 @@
             {{ form.content }}
         </div>
 
-        <!-- Image Upload with Camera Icon Only -->
+        <!-- Image Upload with Black Camera Button -->
         <div class="mb-3">
             <!-- Hidden file input -->
             <input type="file" name="image" accept="image/*" id="id_image" style="display: none;" onchange="updateFileName(this)">
             
-            <!-- Camera Icon Button -->
-            <label for="id_image" class="btn btn-outline-secondary" style="cursor: pointer;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-camera" viewBox="0 0 16 16">
+            <!-- Black Camera Button -->
+            <label for="id_image" class="camera-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" class="bi bi-camera" viewBox="0 0 16 16">
                     <path d="M15 12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h1.172a3 3 0 0 0 2.12-.879l.83-.828A1 1 0 0 1 6.827 3h2.344a1 1 0 0 1 .707.293l.828.828A3 3 0 0 0 12.828 5H14a1 1 0 0 1 1 1z"/>
                     <path d="M8 11a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5"/>
                 </svg>
-                <span id="file-name" style="margin-left: 8px;">Add Photo</span>
+                <span id="file-name">Add Photo</span>
             </label>
         </div>
 
-        <!-- Submit Button with Share Icon -->
+        <!-- Submit Button -->
         <button type="submit" class="btn btn-primary d-flex align-items-center">
             <span class="me-2">Share</span>
 
-            <!-- Share Icon using Bootstrap Icons -->
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-share" viewBox="0 0 16 16">
                 <path d="M13.5 1a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3M11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.5 2.5 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5"/>
             </svg>
@@ -43,7 +86,6 @@
     </form>
 
 </div>
-    <!-- // this will update the text next to the camera icon to show the name of the selected file -->
 
 <script>
     function updateFileName(input) {

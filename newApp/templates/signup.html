@@ -2,35 +2,27 @@
 {% load static %}
 <html lang="en">
 <head>
-  <link rel="stylesheet" href="{% static 'style.css' %}">
+  <link rel="stylesheet" href="{% static 'styles.css' %}">
 </head>
 <body>
-<section>
+<section class="login-section">
   <div class="login-box">
     <form method="POST" action="{% url 'register' %}">
       {% csrf_token %}
       <h2>Sign Up</h2>
-      <!-- EMAIL -->
       <div class="input-box">
-        <span class="icon"><ion-icon name="mail"></ion-icon></span>
         <input type="email" name="email" required pattern=".+@utrgv\.edu" title="Email must end with @utrgv.edu">
         <label>Email</label>
       </div>
-      <!-- USERNAME -->
       <div class="input-box">
-        <span class="icon"><ion-icon name="person-circle-outline"></ion-icon></span>
         <input type="text" name="username" required>
         <label>Username</label>
       </div>
-      <!-- PASSWORD -->
       <div class="input-box">
-        <span class="icon"><ion-icon name="lock-closed"></ion-icon></span>
         <input type="password" name="password1" required>
         <label>Password</label>
       </div>
-      <!-- CONFIRM PASSWORD -->
       <div class="input-box">
-        <span class="icon"><ion-icon name="lock-closed"></ion-icon></span>
         <input type="password" name="password2" required>
         <label>Confirm Password</label>
       </div>
@@ -38,18 +30,15 @@
       <div class="register-link">
         <p>Already have an account? <a href="{% url 'login' %}">Login</a></p>
       </div>
-      <!-- SHOW DJANGO FORM ERRORS -->
       {% if messages %}
       <div class="errors">
         {% for message in messages %}
-          <p style="color:rgb(0, 0, 0);">{{ message }}</p>
+          <p class="error-text">{{ message }}</p>
         {% endfor %}
       </div>
       {% endif %}
     </form>
   </div>
 </section>
-<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
-<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 </body>
 </html>

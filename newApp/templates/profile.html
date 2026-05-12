@@ -2,10 +2,9 @@
 {% load static %}
 {% block content %}
 
-<!-- Load profile CSS -->
-<link rel="stylesheet" href="{% static 'user.css' %}">
+<link rel="stylesheet" href="{% static 'profiles.css' %}">
 
-<div class="container mt-4">
+<div class="profile-container">
 
     <!-- Flash messages -->
     {% if messages %}
@@ -17,227 +16,192 @@
         {% endfor %}
     {% endif %}
 
-    <!-- Username title -->
-    <h2 class="text-center mb-4">{{ profile_user.username }}'s Profile</h2>
+    <!-- PROFILE HEADER -->
+    <div class="profile-header">
 
-    <div class="row justify-content-center">
-        <div class="col-md-6">
+        <div class="profile-left">
+            <img src="{{ profile_user.profile.image.url }}" class="profile-pic-lg profile-pic-global">
 
-            <!-- PROFILE PICTURE ADDED HERE -->
-            <div class="text-center mb-3">
-                <img src="{{ profile_user.profile.image.url }}" 
-                     class="rounded-circle"
-                     style="width: 120px; height: 120px; object-fit: cover; object-position: center;">
+            <div class="profile-info">
+
+                <!-- FULL NAME + USERNAME -->
+                <h2>
+                    {% if profile_user.first_name or profile_user.last_name %}
+                        {{ profile_user.first_name }} {{ profile_user.last_name }}
+                    {% else %}
+                        {{ profile_user.username }}
+                    {% endif %}
+                </h2>
+
+                <p class="username-tag">@{{ profile_user.username }}</p>
+
+                <p class="bio">{{ profile_user.profile.bio|default:"No bio provided" }}</p>
+                <p class="enrolled">Campus {{ profile_user.profile.get_enrolled_display|default:"Not specified" }}</p>
             </div>
+        </div>
 
-            <!-- Profile info card -->
-            <div class="card mb-4 shadow-sm">
-                <div class="card-body">
-                    <h5 class="card-title">Profile Information</h5>
-                    <hr>
+        {% if request.user == profile_user %}
+            <a href="#editProfileForm" data-bs-toggle="collapse" class="header-edit">Edit</a>
+        {% endif %}
+    </div>
 
-                    <p><strong>Name:</strong>
-                        {% if profile_user.first_name or profile_user.last_name %}
-                            {{ profile_user.first_name }} {{ profile_user.last_name }}
-                        {% else %}
-                            Not provided
-                        {% endif %}
-                    </p>
+    <!-- STATS -->
+    <div class="profile-stats">
 
-                    <p><strong>Bio:</strong>
-                        {% if profile_user.profile.bio %}
-                            {{ profile_user.profile.bio }}
-                        {% else %}
-                            No bio provided
-                        {% endif %}
-                    </p>
+        <div class="stat-box">
+            <span class="stat-number">{{ posts_count }}</span>
+            <span class="stat-label">Posts</span>
+        </div>
 
-                    <p><strong>Enrolled:</strong>
-                        {% if profile_user.profile.enrolled %}
-                            {{ profile_user.profile.get_enrolled_display }}
-                        {% else %}
-                            Not specified
-                        {% endif %}
-                    </p>
-                </div>
+        <a href="/{{ profile_user.username }}/followers/" class="text-decoration-none">
+            <div class="stat-box">
+                <span class="stat-number">{{ followers_count }}</span>
+                <span class="stat-label">Followers</span>
             </div>
+        </a>
 
-            <!-- Stats + buttons row -->
-            <div class="d-flex justify-content-around mb-3 text-center">
-                <div>
-                    <strong>{{ posts_count }}</strong><br>
-                    <span>Posts</span>
-                </div>
+        <a href="/{{ profile_user.username }}/following/" class="text-decoration-none">
+            <div class="stat-box">
+                <span class="stat-number">{{ following_count }}</span>
+                <span class="stat-label">Following</span>
+            </div>
+        </a>
 
-                <a href="{% url 'followers_lists' profile_user.username %}" class="text-decoration-none text-dark">
-                    <div>
-                        <strong>{{ followers_count }}</strong><br>
-                        <span>Followers</span>
+    </div>
+
+    <!-- FOLLOW / MESSAGE BUTTONS -->
+    {% if request.user != profile_user %}
+        <div class="d-flex justify-content-center gap-3 mb-4">
+
+            <!-- FIXED: CUSTOM MESSAGE BUTTON -->
+            <a href="{% url 'chat' profile_user.id %}">
+                <button class="profile-action-btn btn-message">Message</button>
+            </a>
+
+            <!-- FIXED: CUSTOM FOLLOW / UNFOLLOW BUTTON -->
+            <form action="{% url 'follow_view' profile_user.username %}" method="POST">
+                {% csrf_token %}
+                {% if is_following %}
+                    <button type="submit" class="profile-action-btn btn-unfollow">Unfollow</button>
+                {% else %}
+                    <button type="submit" class="profile-action-btn btn-follow">Follow</button>
+                {% endif %}
+            </form>
+
+        </div>
+    {% endif %}
+
+    <!-- EDIT PROFILE FORM -->
+    {% if request.user == profile_user %}
+        <div class="collapse" id="editProfileForm">
+            <div class="card card-body shadow-sm mt-3">
+
+                <h4>Edit Profile</h4>
+
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label class="form-label">First Name</label>
+                        {{ u_form.first_name }}
                     </div>
-                </a>
 
-                <a href="{% url 'following_lists' profile_user.username %}" class="text-decoration-none text-dark">
-                    <div>
-                        <strong>{{ following_count }}</strong><br>
-                        <span>Following</span>
+                    <div class="mb-3">
+                        <label class="form-label">Last Name</label>
+                        {{ u_form.last_name }}
                     </div>
-                </a>
 
-                {% if request.user != profile_user %}
-                    <a href="{% url 'chat' profile_user.id %}">
-                        <button class="btn btn-outline-secondary">Message</button>
-                    </a>
+                    <div class="mb-3">
+                        <label class="form-label">Bio</label>
+                        {{ p_form.bio }}
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Enrolled</label>
+                        {{ p_form.enrolled }}
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Profile Picture</label>
+                        {{ p_form.image }}
+                    </div>
+
+                    <button type="submit" class="btn btn-success w-100">Save Changes</button>
+                </form>
+
+            </div>
+        </div>
+    {% endif %}
+
+    <!-- POSTS GRID -->
+    <h3 class="section-title">Your Posts</h3>
+
+    <div class="posts-grid">
+
+        {% for post in posts %}
+            <div class="post-card">
+
+                {% if post.image %}
+                    <img src="{{ post.image.url }}" class="post-image">
                 {% endif %}
 
-                {% if request.user != profile_user %}
-                    <form action="{% url 'follow_view' profile_user.username %}" method="POST" style="display:inline;">
+                <p>{{ post.content }}</p>
+                <span class="timestamp">{{ post.created_at }}</span>
+
+                <!-- ACTION BUTTONS -->
+                <div class="mt-2">
+
+                    {% if post.user == request.user %}
+                        <form action="{% url 'delete_post' post.id %}" method="POST" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                        </form>
+                    {% endif %}
+
+                    <form action="{% url 'like_post' post.id %}" method="POST" style="display:inline;">
                         {% csrf_token %}
                         <button type="submit" class="btn btn-sm btn-outline-primary">
-                            {% if is_following %}
-                                Unfollow
+                            {% if request.user in post.likes.all %}
+                                Unlike
                             {% else %}
-                                Follow
+                                Like
                             {% endif %}
+                            ({{ post.likes_count }})
                         </button>
                     </form>
-                {% endif %}
-            </div>
 
-            <!-- Edit profile (only for the owner) -->
-            {% if request.user == profile_user %}
-                <hr>
+                    <a href="{% url 'comments_page' post.id %}" class="btn btn-sm btn-outline-secondary">
+                        Comment
+                    </a>
 
-                <button class="btn btn-outline-primary w-100 mb-3"
-                        type="button"
-                        data-bs-toggle="collapse"
-                        data-bs-target="#editProfileForm">
-                    Edit Profile
-                </button>
+                    <!-- SHARE BUTTON -->
+                    <div class="dropdown d-inline">
+                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
+                            Share
+                        </button>
 
-                <div class="collapse" id="editProfileForm">
-                    <div class="card card-body shadow-sm">
-
-                        <h4>Edit Profile</h4>
-
-                        <form method="POST" enctype="multipart/form-data">
-                            {% csrf_token %}
-
-                            <div class="mb-3">
-                                <label class="form-label">First Name</label>
-                                {{ u_form.first_name }}
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="form-label">Last Name</label>
-                                {{ u_form.last_name }}
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="form-label">Bio</label>
-                                {{ p_form.bio }}
-                                <div class="form-text">Tell us a little about yourself</div>
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="form-label">Enrolled</label>
-                                {{ p_form.enrolled }}
-                                <div class="form-text">What campus are you enrolled in?</div>
-                            </div>
-
-                            <!-- PROFILE IMAGE FIELD ALREADY WORKS -->
-                            <div class="mb-3">
-                                <label class="form-label">Profile Picture</label>
-                                {{ p_form.image }}
-                            </div>
-
-                            <button type="submit" class="btn btn-success w-100">Save Changes</button>
-                        </form>
-
-                    </div>
-                </div>
-            {% endif %}
-
-            <!-- Posts section -->
-            <hr>
-            <h4 class="text-center mt-4 mb-3">Your Posts</h4>
-
-            {% for post in posts %}
-                <div class="card mb-3 shadow-sm">
-                    <div class="card-body">
-
-                        <!-- PROFILE PIC NEXT TO POSTS -->
-                        <div class="d-flex align-items-center mb-2">
-                            <img src="{{ post.user.profile.image.url }}"
-                                 class="rounded-circle"
-                                 style="width: 40px; height: 40px; object-fit: cover; object-position: center;">
-
-                            <span class="ms-2 fw-bold">{{ post.user.username }}</span>
-                        </div>
-
-                        <!-- Post text -->
-                        <p class="card-text">{{ post.content }}</p>
-
-                        <!-- Post image -->
-                        {% if post.image %}
-                            <img src="{{ post.image.url }}" class="img-fluid rounded mb-2" alt="Post Image">
-                        {% endif %}
-
-                        <!-- Timestamp -->
-                        <p class="text-muted small">Posted on {{ post.created_at }}</p>
-
-                        <!-- Delete button (only owner) -->
-                        {% if post.user == request.user %}
-                            <form action="{% url 'delete_post' post.id %}" method="POST" style="display:inline;">
-                                {% csrf_token %}
-                                <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
-                            </form>
-                        {% endif %}
-
-                        <!-- Like button -->
-                        <form action="{% url 'like_post' post.id %}" method="POST" style="display:inline;">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-sm btn-outline-primary">
-                                {% if request.user in post.likes.all %}
-                                    Unlike
-                                {% else %}
-                                    Like
-                                {% endif %}
-                                ({{ post.likes_count }})
-                            </button>
-                        </form>
-
-                        <!-- Comment button -->
-                        <a href="{% url 'comments_page' post.id %}" class="btn btn-sm btn-outline-secondary">
-                            Comment
-                        </a>
-
-                        <!-- Share button -->
-                        <div class="dropdown d-inline">
-                            <button class="btn btn-sm btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
-                                Share
-                            </button>
-
-                            <ul class="dropdown-menu">
-                                {% for f in request.user.following.all %}
+                        <ul class="dropdown-menu">
+                            {% for f in request.user.following.all %}
                                 <li>
                                     <a class="dropdown-item" href="{% url 'share-post' post.id f.following.id %}">
                                         {{ f.following.username }}
                                     </a>
                                 </li>
-                                {% empty %}
+                            {% empty %}
                                 <li><span class="dropdown-item-text">No followers</span></li>
-                                {% endfor %}
-                            </ul>
-                        </div>
-
+                            {% endfor %}
+                        </ul>
                     </div>
-                </div>
-            {% empty %}
-                <p class="text-center text-muted">No posts yet.</p>
-            {% endfor %}
 
-        </div>
+                </div>
+
+            </div>
+        {% empty %}
+            <p class="text-center text-light">No posts yet.</p>
+        {% endfor %}
+
     </div>
+
 </div>
 
 {% endblock %}
