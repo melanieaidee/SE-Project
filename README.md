@@ -1,53 +1,86 @@
-# Now Both branches are merge for phase 1.0 and 1.1
+# Project Overview
+VaqueroConnect is a social platform designed for UTRGV students. The goal of the project is to allow students to connect with each other through profiles, posts, following, notifications, and chat features. The platform includes a login system restricted to @utrgv.edu accounts, personalized profiles, a home feed, and interactive social features such as likes and follows.
+
+This document outlines the full development timeline from the early prototype to Phase 1.5.
+
+---
+
+
 # Phase 1.0
-### Anna:
+## Anna:
 - Created a new branch dedicated to the front-end platform (HTML/CSS design)
-- Designed the Home and Navbar pages  
-- Created main_home.html to serve as the actual home page after the user log in  
-- Fixed the logout system  
+- Designed the Home and Navbar pages
+- Created `main_home.html` to serve as the actual home page after the user logs in
+- Fixed the logout system
 
-### Melanie:
-- Worked on login system and profile prototype  
-- Updated naming conventions  
+## Melanie:
+- Worked on login system and profile prototype
+- Updated naming conventions
+- Fixed login system
+- Created `static.py` for frontend of login
 
-# Phase 1.1 — Backend Update 
-### Anna:
+---
+
+# Phase 1.1 — Backend Update
+## Anna:
 **New backend features added:**
 - Created a new backend branch (`back_enddesign`)
-- Implemented the full Follow/Unfollow system  
-- Added the Follow model and database migration  
-- Added follow/unfollow button logic with the proper redirects  
-- Added follower and following counts to user profiles  
-- Updated profile page to show:  
-  - Follow button  
+- Implemented the full Follow/Unfollow system
+- Added the Follow model and database migration
+- Added follow/unfollow button logic with proper redirects
+- Added follower and following counts to user profiles
+- Updated profile page to show:
+  - Follow button
   - Follower/Following counts
 
-# Phase 1.3 — Backend new Update 
-### Anna:
+## Melanie:
+- Worked on frontend and backend for login/signin system
+- Added a submit button with proper redirects
+- Added a "must have @utrgv.edu account" restriction for signup
+
+---
+
+# Branch Merge Update
+Both the front-end and back-end branches for Phase 1.0 and Phase 1.1 were successfully merged into the main development branch.  
+This merge unified the login system, profile prototype, follow system, and updated frontend design into one stable build.
+
+---
+
+# Phase 1.3 — Backend New Update
+## Anna:
 **New backend features added:**
 - Created another backend branch (`back_end1.3`)
 - Implemented the post system
-- Made a database for the post
-- Added a new page to create posts for the user to upload and share their pictures
-- When sharing new posts the posts will show in the main_home and the profile pages
-- Added the post count and showcase on the user Profile 
-- Updated the enrolled selection for Users to know which campus each student is from
+- Created a database model for posts
+- Added a new page for users to create posts and upload/share pictures
+- Posts now appear in `main_home` and profile pages
+- Added post count and post showcase on the user profile
+- Updated the enrolled campus selection for users
 - Added the notification page
 - Implemented the notification system
-- Created the model, built the API and added the notification page
+  - Created the model
+  - Built the API
+  - Added the notification page
 - Integrated notifications with post likes
 - Added the chat system
-- Fix bugs and organize static and other files
-# Phase 1.4 front end design 
-### Melanie:
-- Modify the profile page design
-- Added the profile user picture 
-- New design for the log in and register page
-- Modify the colors of html pages for main_home, create_post and chat
-# Phase 1.5 Backend and Frontend Final Touches 
-### Anna:
-- Fix and add a back up code from a corrupted branch
-- Modify and fix bugs on the backend design
-- Modify the html pages and fix a profile picture bug
-- Fix the notification API restframework
+- Fixed bugs and organized static and other files
+
+---
+
+# Phase 1.4 — Front End Design
+## Melanie:
+- Modified the profile page design
+- Added the profile user picture
+- Created a new design for the login and register pages
+- Modified the color themes for `main_home`, `create_post`, and chat pages
+
+---
+
+# Phase 1.5 — Backend and Frontend Final Touches
+## Anna:
+- Fixed and added backup code from a corrupted branch
+- Modified and fixed bugs in the backend design
+- Updated HTML pages and fixed a profile picture bug
+- Fixed the notification API (Django REST Framework)
+
 
