@@ -1,9 +1,39 @@
-<h2>Login Account</h2>
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
 
-<form method="post">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit">Login</button>
-</form>
+<head>
+  <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
 
-<a href="{% url 'register' %}">Or create account</a>
+<body>
+
+<section class="login-section">
+  <div class="login-box">
+
+    <form method="POST" action="{% url 'login' %}">
+      {% csrf_token %}
+      <h2>Login</h2>
+
+      <div class="input-box">
+        <input type="text" name="username" required>
+        <label>Username</label>
+      </div>
+
+      <div class="input-box">
+        <input type="password" name="password" required>
+        <label>Password</label>
+      </div>
+
+      <button type="submit">Login</button>
+
+      <div class="register-link">
+        <p>Don't have an account? <a href="{% url 'register' %}">Register</a></p>
+      </div>
+    </form>
+
+  </div>
+</section>
+
+</body>
+</html>

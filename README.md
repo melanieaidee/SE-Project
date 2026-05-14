@@ -1,71 +1,85 @@
-# VaqueroConnect  
-VaqueroConnect is a planned social platform created for students across all UTRGV campuses. The goal is to give students a space to connect with each other regardless of location, helping build friendships, share interests, and stay informed about campus life.
+# Project Overview
+VaqueroConnect is a social platform designed for UTRGV students. The goal of the project is to allow students to connect with each other through profiles, posts, following, notifications, and chat features. The platform includes a login system restricted to @utrgv.edu accounts, personalized profiles, a home feed, and interactive social features such as likes and follows.
 
-## This Platform will allow students to:
-- Share posts about hobbies, routines, and daily life  
-- Announce or discover upcoming events  
-- Build personal profiles that reflect their interests  
-- Connect with other Vaqueros across campuses  
-
----
-
-# Early Prototype Plan
-The first prototype focuses on building the foundation of the app:
-- Homepage  
-- Login and registration system  
-- Profile page  
+This document outlines the full development timeline from the early prototype to Phase 1.5.
 
 ---
 
 # Phase 1.0
-### Anna:
+## Anna:
 - Created a new branch dedicated to the front-end platform (HTML/CSS design)
-- Designed the Home and Navbar pages  
-- Created main_home.html to serve as the actual home page after the user log in  
-- Fixed the logout system  
+- Designed the Home and Navbar pages
+- Created `main_home.html` to serve as the actual home page after the user logs in
+- Fixed the logout system
 
-### Melanie:
-- Worked on login system and profile prototype  
+## Melanie:
+- Worked on login system and profile prototype
 - Updated naming conventions
 - Fixed login system
-- Created static.py for frontend of login
+- Created `static.py` for frontend of login
 
 ---
 
-# Phase 1.1 — Backend Update 
-### Anna:
+# Phase 1.1 — Backend Update
+## Anna:
 **New backend features added:**
 - Created a new backend branch (`back_enddesign`)
-- Implemented the full Follow/Unfollow system  
-- Added the Follow model and database migration  
-- Added follow/unfollow button logic with the proper redirects  
-- Added follower and following counts to user profiles  
-- Updated profile page to show:  
-  - Follow button  
+- Implemented the full Follow/Unfollow system
+- Added the Follow model and database migration
+- Added follow/unfollow button logic with proper redirects
+- Added follower and following counts to user profiles
+- Updated profile page to show:
+  - Follow button
   - Follower/Following counts
-### Melanie:
+
+## Melanie:
 - Worked on frontend and backend for login/signin system
 - Added a submit button with proper redirects
 - Added a "must have @utrgv.edu account" restriction for signup
+
 ---
-# Sprints  
-### Sprint 1  
-- **Anna:** Django setup, login, and home page  
-- **Melanie:** Updated naming conventions  
 
-### Sprint 2  
-- **Anna:** Home page prototype  
-- **Melanie:** Profile prototype  
+# Branch Merge Update
+Both the front-end and back-end branches for Phase 1.0 and Phase 1.1 were successfully merged into the main development branch.  
+This merge unified the login system, profile prototype, follow system, and updated frontend design into one stable build.
 
-### Sprint 3  
-- **Anna & Melanie:** Worked on Figma prototype Link: https://www.figma.com/design/JhgLjZyBZPv3U7ldjhkwSy/Figma-basics?node-id=1669-162202&t=EzRCvfGiioPoiQ6k-1
+---
 
-### Sprint 4  
-- **Anna:** Created new branch for HTML/CSS, designed home and navbar, created main_home file, fixed logout  
-- **Melanie:** Worked on login/signup system using and HTML, CSS
+# Phase 1.3 — Backend New Update
+## Anna:
+**New backend features added:**
+- Created another backend branch (`back_end1.3`)
+- Implemented the post system
+- Created a database model for posts
+- Added a new page for users to create posts and upload/share pictures
+- Posts now appear in `main_home` and profile pages
+- Added post count and post showcase on the user profile
+- Updated the enrolled campus selection for users
+- Added the notification page
+- Implemented the notification system
+  - Created the model
+  - Built the API
+  - Added the notification page
+- Integrated notifications with post likes
+- Added the chat system
+- Fixed bugs and organized static and other files
 
-### Sprint 5  
-- **Anna:** Created backend branch, implemented follow system, follow/unfollow button, follower/following lists
-- **Melanie:** Worked on frontend and backend for login/signin system using HTML and CSS, sign up button and submit button
-   
-   
+---
+
+# Phase 1.4 — Front End Design
+## Melanie:
+- Modified the profile page design
+- Added the profile user picture
+- Created a new design for the login and register pages
+- Modified the color themes for `main_home`, `create_post`, and chat pages
+
+---
+
+# Phase 1.5 — Backend and Frontend Final Touches
+## Anna:
+- Fixed and added backup code from a corrupted branch
+- Modified and fixed bugs in the backend design
+- Updated HTML pages and fixed a profile picture bug
+- Fixed the notification API (Django REST Framework)
+
+

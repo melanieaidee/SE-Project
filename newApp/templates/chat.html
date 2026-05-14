@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<!-- Force Edge + Chrome to load the newest CSS -->
+<link rel="stylesheet" href="{% static 'chat.css' %}?v=10">
+
+<div class="chat-wrapper">
+
+    <!-- Header -->
+    <div class="chat-header">
+
+        <!-- Profile Picture -->
+        <img 
+            src="{{ other_user.profile.image.url }}" 
+            class="profile-pic-global profile-pic-chat"
+            alt="Profile Picture"
+        >
+
+        <!-- Username link -->
+        <a href="{% url 'profile' other_user.username %}" class="chat-header-user">
+            {{ other_user.username }}
+        </a>
+
+    </div>
+
+    <!-- Messages -->
+    <div class="messages-area" id="messages-area">
+
+        {% if can_chat %}
+            {# MUTUAL FOLLOW: show messages normally #}
+            {% if messages %}
+                {% for msg in messages %}
+                <div class="chat-bubble {% if msg.sender == request.user %}sent{% else %}received{% endif %}">
+
+                    <!-- Username inside bubble -->
+                    <a href="{% url 'profile' msg.sender.username %}" class="bubble-username">
+                        {{ msg.sender.username }}
+                    </a>
+
+                    <!-- Message text -->
+                    <div class="bubble-text">
+                        {{ msg.body|urlize|safe }}
+                    </div>
+
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="empty-chat">
+                    Start your conversation with {{ other_user.username }}
+                </div>
+            {% endif %}
+        {% else %}
+            {# NOT MUTUAL FOLLOW: block chat #}
+            <div class="empty-chat text-danger fw-bold">
+                You must follow each other to chat.
+            </div>
+        {% endif %}
+
+    </div>
+
+    <!-- Input -->
+    <form method="POST"
+          action="{% url 'send_message' other_user.id %}"
+          class="chat-input-area">
+        {% csrf_token %}
+
+        <input
+            type="text"
+            name="body"
+            class="chat-input"
+            placeholder="Type a message..."
+            {% if not can_chat %}disabled{% endif %}
+        >
+
+        <button type="submit" class="send-btn" {% if not can_chat %}disabled{% endif %}>
+            ➤
+        </button>
+    </form>
+
+</div>
+
+<!-- Auto scroll to latest message -->
+<script>
+    const messagesArea = document.getElementById("messages-area");
+    if (messagesArea) {
+        messagesArea.scrollTop = messagesArea.scrollHeight;
+    }
+</script>
+
+{% endblock %}

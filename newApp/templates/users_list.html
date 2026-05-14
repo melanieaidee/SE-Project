@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'feed.css' %}">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+<div class="container mt-4">
+
+    <h3 class="mb-4 fw-bold">Messages</h3>
+
+    {# Loop through all users passed from the view #}
+    {% for user in users %}
+
+        {# FIRST CHECK: Does the current user follow this user? #}
+        {% for f in request.user.following.all %}
+            {% if f.following.id == user.id %}
+
+                {# SECOND CHECK: Does THIS user also follow the current user? (mutual follow) #}
+                {% for back in user.following.all %}
+                    {% if back.following.id == request.user.id %}
+
+                        <!-- MUTUAL FOLLOW FOUND: Show this user in the inbox list -->
+                        <a href="{% url 'chat' user.id %}" class="inbox-item">
+
+                            <!-- REAL PROFILE PIC -->
+                            <img src="{{ user.profile.image.url }}" class="profile-pic-global profile-pic-md">
+
+                            <!-- USERNAME -->
+                            <span class="inbox-username">{{ user.username }}</span>
+
+                            <!-- RIGHT ARROW ICON -->
+                            <i class="bi bi-chevron-right inbox-arrow"></i>
+
+                        </a>
+
+                    {% endif %}
+                {% endfor %}
+
+            {% endif %}
+        {% endfor %}
+
+    {% empty %}
+        <!-- If no users are available (no mutual follows) -->
+        <p class="text-muted">No users available.</p>
+    {% endfor %}
+
+</div>
+
+{% endblock %}

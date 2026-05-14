@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'followers.css' %}?v=2">
+
+<div class="follow-wrapper">
+
+    <h1 class="follow-title">{{ list_users.username }} is Following</h1>
+
+    {% for f in following %}
+        <div class="follow-item">
+
+            <img 
+                src="{{ f.following.profile.image.url }}" 
+                class="follow-pic"
+                alt="Profile Picture"
+            >
+
+            <a href="{% url 'profile' f.following.username %}">
+                {{ f.following.username }}
+            </a>
+
+        </div>
+    {% empty %}
+        <p class="empty-text">Not following anyone.</p>
+    {% endfor %}
+
+</div>
+
+{% endblock %}

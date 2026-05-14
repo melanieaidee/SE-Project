@@ -1,0 +1,97 @@
+/* NAVBAR CONTAINER */
+.navbar {
+    background: #c63c00;
+    padding: 12px 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid rgba(255,255,255,0.15);
+}
+
+/* LOGO TEXT */
+.logo-text {
+    font-family: 'Frijole', cursive;
+    font-size: 30px;
+    color: white;
+    letter-spacing: 2px;
+}
+
+/* RIGHT SIDE NAVIGATION */
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    font-family: 'Inter', sans-serif;
+}
+
+/* BASE LINK STYLE */
+.nav-link {
+    color: white;
+    text-decoration: none;
+    font-size: 17px;
+    font-weight: 500;
+    padding: 6px 10px;
+    border-radius: 6px;
+    transition: 0.25s ease;
+}
+
+/* HOVER EFFECT */
+.nav-link:hover {
+    background: rgba(255,255,255,0.18);
+}
+
+/* ICON + TEXT ALIGNMENT */
+.icon-link {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* ICON ANIMATION */
+.icon-link svg {
+    transition: 0.25s ease;
+}
+
+.icon-link:hover svg {
+    transform: scale(1.15);
+    opacity: 0.85;
+}
+
+/* CREATE POST BUTTON */
+.create-btn {
+    background: #ffffff33;
+    padding: 6px 10px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.25s ease;
+}
+
+.create-btn:hover {
+    background: #ffffff55;
+    transform: scale(1.12);
+}
+
+/* LOGOUT LINK */
+.logout {
+    color: #ffe0d1;
+}
+
+.logout:hover {
+    background: rgba(255, 255, 255, 0.22);
+}
+
+/* RESPONSIVE */
+@media (max-width: 600px) {
+    .logo-text {
+        font-size: 24px;
+    }
+    .nav-right {
+        gap: 14px;
+    }
+    .nav-link {
+        font-size: 15px;
+        padding: 5px 8px;
+    }
+}
