@@ -38,3 +38,16 @@
 - Integrated notifications with post likes
 - Added the chat system
 - Fix bugs and organize static and other files
+# Phase 1.4 front end design 
+### Melanie:
+- Modify the profile page design
+- Added the profile user picture 
+- New design for the log in and register page
+- Modify the colors of html pages for main_home, create_post and chat
+# Phase 1.5 Backend and Frontend Final Touches 
+### Anna:
+- Fix and add a back up code from a corrupted branch
+- Modify and fix bugs on the backend design
+- Modify the html pages and fix a profile picture bug
+- Fix the notification API restframework
+
