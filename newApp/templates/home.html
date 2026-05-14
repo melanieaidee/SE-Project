@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% block content %}
+<link href="https://fonts.googleapis.com/css2?family=Frijole&display=swap" rel="stylesheet">
+
+<div class="intro-wrapper">
+    <img src="https://www.utrgv.edu/newsroom/2019/06/images/utrgv-vaquero-mascot-block.jpg" class="center-img">
+
+    <div class="text-box">
+        VaqueroConnect
+    </div>
+</div>
+
+<style>
+    body {
+        background: linear-gradient(180deg, #ff5500 0%, #d63f00 100%);
+        margin: 0;
+    }
+
+    .intro-wrapper {
+        position: relative;
+        width: 100%;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .center-img {
+        width: 1200px;
+        height:  600px;
+        display: block;
+    }
+
+    .text-box {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 700px;
+        height: 150px;
+        background: rgba(0, 0, 0, 0.45);
+        border-radius: 15px;
+        backdrop-filter: blur(4px);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        font-size: 70px;
+        font-family: 'Frijole', cursive;
+        letter-spacing: 4px;
+        padding: 20px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+        text-shadow: 3px 3px 8px rgba(0,0,0,0.7);
+    }
+</style>
+{% endblock %}

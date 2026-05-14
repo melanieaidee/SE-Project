@@ -1,0 +1,85 @@
+{% load static %}
+
+<!-- Connect your static CSS file -->
+<link rel="stylesheet" href="{% static 'navbar.css' %}">
+
+<!-- Import fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Frijole&display=swap" rel="stylesheet">
+
+<nav class="navbar">
+
+    <!-- LEFT: LOGO -->
+    <div class="nav-left">
+        <span class="logo-text">VaqueroConnect</span>
+    </div>
+
+    <!-- RIGHT: NAVIGATION -->
+    <div class="nav-right">
+
+        {% if request.user.is_authenticated %}
+
+            <!-- CREATE POST -->
+            <a href="{% url 'create_post' %}" class="create-btn" title="Create Post">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="white" viewBox="0 0 16 16">
+                    <path d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1m0 1a6 6 0 1 1 0 12A6 6 0 0 1 8 2"/>
+                    <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
+                </svg>
+            </a>
+
+            <!-- HOME -->
+            {% if request.resolver_match.url_name != 'home' %}
+            <a href="{% url 'main_home' %}" class="nav-link icon-link">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="white" viewBox="0 0 16 16">
+                    <path d="M8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5H2v7a1 1 0 0 0 1 1h3v-4h2v4h3a1 1 0 0 0 1-1v-7h.5a.5.5 0 0 0 .354-.854z"/>
+                </svg>
+                Home
+            </a>
+            {% endif %}
+
+            <!-- SEARCH -->
+            <a href="{% url 'user_search' %}" class="nav-link icon-link">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="white" viewBox="0 0 16 16">
+                    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85zm-5.242 1.156a5 5 0 1 1 0-10 5 5 0 0 1 0 10"/>
+                </svg>
+                Search
+            </a>
+
+            <!-- NOTIFICATIONS -->
+            <a href="{% url 'notifications-page' %}" class="nav-link icon-link" style="position: relative;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="white" viewBox="0 0 16 16">
+                    <path d="M8 16a2 2 0 0 0 1.985-1.75H6.015A2 2 0 0 0 8 16m.104-14.042a1 1 0 1 0-2.208 0A5.002 5.002 0 0 0 3 6c0 1.098-.5 2.598-1.528 3.854-.287.36-.472.81-.472 1.29 0 .552.448 1 1 1h12a1 1 0 0 0 1-1c0-.48-.185-.93-.472-1.29C13.5 8.598 13 7.098 13 6a5.002 5.002 0 0 0-3.896-4.042"/>
+                </svg>
+
+                <!-- Notification Count Badge -->
+                <span id="notif-count" style="
+                    position: absolute;
+                    top: -5px;
+                    right: -5px;
+                    background: rgb(0, 0, 0);
+                    color: white;
+                    font-size: 11px;
+                    padding: 2px 6px;
+                    border-radius: 50%;
+                    display: none;
+                "></span>
+            </a>
+
+            <!-- PROFILE -->
+            <a href="{% url 'profile' request.user.username %}" class="nav-link icon-link">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="white" viewBox="0 0 16 16">
+                    <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m4 8c1.105 0 2-.672 2-1.5 0-2.21-3.582-4-8-4s-8 1.79-8 4c0 .828.895 1.5 2 1.5z"/>
+                </svg>
+                Profile
+            </a>
+
+            <!-- LOGOUT -->
+            <a href="{% url 'logout' %}" class="nav-link logout">Logout</a>
+
+        {% else %}
+
+            <!-- LOGIN -->
+            <a href="{% url 'login' %}" class="nav-link">Login</a>
+
+        {% endif %}
+    </div>
+</nav>

@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<!-- this is the html template for searching users based on campus selection and name/username input
+     it uses search.css for styling and displays a clean grid of user cards with profile, message, and view buttons -->
+
+<link rel="stylesheet" href="{% static 'search.css' %}">
+
+<div class="search-container">
+
+    <h2 class="section-title">Search Students</h2>
+
+    <!-- SEARCH FORM -->
+    <form method="GET" action="" class="search-form">
+
+        <!-- CAMPUS DROPDOWN -->
+        <select name="campus" class="search-input">
+            <option value="">Select Campus</option>
+            <option value="ED" {% if campus == "ED" %}selected{% endif %}>Edinburg</option>
+            <option value="BR" {% if campus == "BR" %}selected{% endif %}>Brownsville</option>
+        </select>
+
+        <!-- SEARCH BAR -->
+        <input 
+            type="text" 
+            name="q" 
+            value="{{ query }}" 
+            placeholder="Search users..." 
+            class="search-input"
+        >
+
+        <!-- SEARCH BUTTON -->
+        <button type="submit" class="search-btn">Search</button>
+    </form>
+
+    <!-- SEARCH RESULTS -->
+    <div class="results-grid">
+        {% for user in users %}
+            <div class="user-card">
+
+                <!-- PROFILE IMAGE -->
+                <img src="{{ user.profile.image.url }}" alt="Profile">
+
+                <!-- USER INFO -->
+                <p class="username">{{ user.username }}</p>
+                <p>{{ user.first_name }} {{ user.last_name }}</p>
+
+                <!-- ACTION BUTTONS -->
+                <a href="{% url 'profile' user.username %}" class="btn-small">View Profile</a>
+                <a href="{% url 'chat' user.id %}" class="btn-small">Message</a>
+
+            </div>
+        {% empty %}
+            <p style="color:rgb(0, 0, 0);">No users found.</p>
+        {% endfor %}
+    </div>
+
+</div>
+
+{% endblock %}

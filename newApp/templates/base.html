@@ -1,0 +1,59 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>VaqueroConnect</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <!-- Page specific CSS -->
+    {% block extra_css %}
+    {% endblock %}
+</head>
+
+<body>
+    {% include 'navbar.html' %}
+
+    {% block content %}
+    {% endblock %}
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Notification Count Script -->
+  <script>
+    //got help from ai and google
+    // Wait until the entire page has loaded
+    document.addEventListener("DOMContentLoaded", function () {
+
+        // Call your Django API endpoint using the URL name "notifications-list"
+        // This returns JSON in the format:
+        // { count: X, next: null }
+        fetch("{% url 'notifications-list' %}")
+            // Convert the API response into JSON
+            .then(response => response.json())
+            // Process the JSON data
+            .then(data => {
+                // The notifications are inside data.results
+                // it filter to count only unread notifications
+                const unreadCount = data.results.filter(n => !n.is_read).length;
+                // Finds the badge element in the navbar
+                const notifBadge = document.getElementById("notif-count");
+                // If the badge exists, updates it
+                if (notifBadge) {
+                    // Set the number inside the red circle
+                    notifBadge.textContent = unreadCount;
+                    // Show the badge only if there are unread notifications
+                    notifBadge.style.display = unreadCount > 0 ? "inline-block" : "none";
+                }
+            })
+
+            // If something goes wrong (API error, network issue), log it
+            .catch(error => console.error("Error fetching notifications:", error));
+    });
+    </script>
+</body>
+</html>
