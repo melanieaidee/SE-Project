@@ -103,8 +103,6 @@ def profile_view(request, username):
         'u_form': u_form,
         'p_form': p_form,
     })
-
-
 #####################################################################################################
 #this is the login view which will authenticate the user and log them in
 def login_view(request):
@@ -128,7 +126,6 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return redirect('home')
-
 #####################################################################################################
 #this will be the profile view with the username
 def follow_view(request, username):
@@ -152,14 +149,12 @@ def follow_view(request, username):
 #####################################################################################################
 #will separate the followers and following lists into their own views and templates easier not to mess it up
 #this will be the followers view for the user to direct them to the followers list of users   
-
 def followers_lists(request, username):
     list_users = get_object_or_404(User, username=username)#this is the user whose followers we want to see
     followers = list_users.followers.all()
     return render(request, 'followers_lists.html', {
         'list_users': list_users,
-        'followers': followers,
-        
+        'followers': followers,   
     })
 #####################################################################################################
 #this will be the following view for the user to direct them to the following list of users   
@@ -168,22 +163,29 @@ def following_lists(request, username):
     following = list_users.following.all()
     return render(request, 'following_lists.html', {
         'list_users': list_users,
-        'following': following,
-        
+        'following': following,   
     })
 #####################################################################################################
-#this is to create a post that they can upload an image and write a caption that will later display on the main home page 
+# Handles the creation of a new post by the logged‑in user
+@login_required
 def create_post(request):
+    # If the form was submitted, process the POST data
     if request.method == 'POST':
         form = PostForm(request.POST, request.FILES)
+        # Validate the form before saving
         if form.is_valid():
+            # Create the post object but don't save it yet
             post = form.save(commit=False)
-            post.user = request.user  
+            # Assign the current user as the post owner
+            post.user = request.user
+            # Save the completed post to the database
             post.save()
+            # Redirect to the home page after successful creation
             return redirect('main_home')
     else:
+        # If it's a GET request, display an empty form
         form = PostForm()
-
+    # Render the post creation page with the form
     return render(request, 'create_post.html', {'form': form})
 #####################################################################################################
 def delete_post(request, *args, **kwargs):
@@ -197,11 +199,14 @@ def delete_post(request, *args, **kwargs):
     #this will redirect to the profile page after d;eting the post
     return redirect('profile', username=request.user.username)
 #####################################################################################################
+# Redirects the logged in user to their own profile pag
 @login_required
 def my_profile_redirect(request):
+    # Send the user to their profile using their username in the URL
     return redirect('profile', username=request.user.username)
 #####################################################################################################
 def like_post(request, post_id):
+    # Get the user you are trying to like or unlike, or return 404 if not found
     post = get_object_or_404(Post, id=post_id)
     if request.user in post.likes.all():
         post.likes.remove(request.user)  # Unlike the post
@@ -217,6 +222,8 @@ def like_post(request, post_id):
 #this is the user_list for that will show all the users except the curretn user 
 @login_required
 def users_list(request):
+    # Get all non-admin users (no superusers, no staff accounts)
+    # Exclude the current user so they don't see themselves in the list
     users = User.objects.filter(is_superuser=False, is_staff=False).exclude(id=request.user.id)
     return render (request, "users_list.html", {"users": users})
 #######################################################################################################
@@ -224,8 +231,9 @@ def users_list(request):
 #they are following each other or not so that if not it will show a message that they need to follow each other 
 @login_required
 def chat_view(request, user_id):
+    # Get the user you are trying to chat with, or return 404 if not found
     other_user = get_object_or_404(User, id=user_id)
-
+    #prevent users from opening a chat with themselves
     if other_user == request.user:
         return redirect("main_home")
 
@@ -256,31 +264,33 @@ def chat_view(request, user_id):
 #this is to send the message between the current user and the other user that they are messaging with and redirect them to the chat page after sending the message
 @login_required
 def send_message(request, user_id):
+    # Get the user you are trying to message, or return 404 if not found
     other_user = get_object_or_404(User, id=user_id)
-
+    #Prevent users from messaging themselves
     if other_user == request.user:
         return redirect("main_home")
-
+    #check if you follow the other user
     follows_other = Follow.objects.filter(
         follower=request.user,
         following=other_user
     ).exists()
-
+    #check if other user follows you
     other_follows = Follow.objects.filter(
         follower=other_user,
         following=request.user
     ).exists()
-
+    #handle message submission
     if request.method == "POST":
+        #Get the message text and remove extra spaces
         body = request.POST.get("body", "").strip()
-
+        #only create a messafe if the body is not empty
         if body:
             Message.objects.create(
                 sender=request.user,
                 receiver=other_user,
                 body=body
             )
-
+    #redirect back to the chat page
     return redirect("chat", user_id=user_id)
 #######################################################################################################
 # API view returns all notifications for the authenticated user in JSON format.
@@ -357,14 +367,16 @@ def notifications_page(request):
 # field to True and saves the change. After updating the notification, the user is
 # redirected back to the notifications page so the interface immediately reflects the
 # updated read status.
+# Marks a specific notification as read when the user clicks it
 @login_required
 def mark_notification_read(request, pk):
-    # Ensures the notification exists AND belongs to the current user.
+    # Ensure the notification exists and belongs to the current user.
+    # get_object_or_404 prevents unauthorized access to another user's notifications.
     notif = get_object_or_404(Notification, pk=pk, recipient=request.user)
-
+    # Update the notification's read status
     notif.is_read = True
     notif.save()
-
+    # Redirect back to the notifications page so the UI updates immediately
     return redirect('notifications-page')
 ###########################################################################################
 #this is the view for adding a  comment to a post and creating a notification for the 
@@ -416,12 +428,14 @@ def share_post_to_user(request, post_id, receiver_id):
 # it allows the user to pick a campus (Edinburg or Brownsville) and then type a name
 # the view filters the User model by the selected campus and the search text
 # and returns a list of matching users so the user can view their profile or message them
-
 def user_search(request):
     query = request.GET.get("q", "")          # the text the user typed in the search bar
     campus = request.GET.get("campus", "")    # the campus selected from the dropdown
 
     users = User.objects.all()                # start with all users
+
+    # EXCLUDE ADMIN so that it doesn't show in the search
+    users = users.exclude(is_superuser=True).exclude(is_staff=True)
 
     # filter by campus if the user selected one
     if campus:

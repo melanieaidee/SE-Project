@@ -50,6 +50,7 @@ urlpatterns = [
     path("search/", views.user_search, name="user_search"),
 ]
 
-# Serve media files during development
+# Django does NOT serve media files automatically in production.
+# This block allows uploaded images/files to work locally during development.
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

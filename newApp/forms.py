@@ -1,5 +1,4 @@
 #add the forms for our models
-
 from django import forms
 from django.contrib.auth.models import User
 from .models import Profile
