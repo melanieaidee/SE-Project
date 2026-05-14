@@ -231,34 +231,39 @@ def users_list(request):
 #they are following each other or not so that if not it will show a message that they need to follow each other 
 @login_required
 def chat_view(request, user_id):
-    # Get the user you are trying to chat with, or return 404 if not found
+    # Get the user you are trying to chat with (or return 404 if not found)
     other_user = get_object_or_404(User, id=user_id)
-    #prevent users from opening a chat with themselves
+    # Prevent users from opening a chat with themselves
     if other_user == request.user:
         return redirect("main_home")
-
+    #checks for mutual following
     follows_other = Follow.objects.filter(
         follower=request.user,
         following=other_user
     ).exists()
-
+    # Does the other user follow the current user?
     other_follows = Follow.objects.filter(
         follower=other_user,
         following=request.user
     ).exists()
-
-    #this is going to get all the messages between the curretn user and the other user
-    #with the order of the timestamp to show the messages in the order they were sent
+    # Only allow chat if both follow each other
+    can_chat = follows_other and other_follows
+    # Get messages b/t to users
+    # This retrieves every message where:
+    # sender is either user
+    # receiver is either user
+    # Then orders them by timestamp (oldest → newest)
     chat_messages = Message.objects.filter(
         sender__in=[request.user, other_user],
         receiver__in=[request.user, other_user]
     ).order_by("timestamp")
-
+    # other_user, who you're chatting with
+    # messages , the conversation history
+    # can_chat , whether mutual follow exists
     return render(request, "chat.html", {
         "other_user": other_user,
         "messages": chat_messages,
-        "follows_other": follows_other,
-        "other_follows": other_follows,
+        "can_chat": can_chat,
     })
 #########################################################################################################
 #this is to send the message between the current user and the other user that they are messaging with and redirect them to the chat page after sending the message

@@ -28,25 +28,33 @@
     <!-- Messages -->
     <div class="messages-area" id="messages-area">
 
-        {% if messages %}
-            {% for msg in messages %}
-            <div class="chat-bubble {% if msg.sender == request.user %}sent{% else %}received{% endif %}">
+        {% if can_chat %}
+            {# MUTUAL FOLLOW: show messages normally #}
+            {% if messages %}
+                {% for msg in messages %}
+                <div class="chat-bubble {% if msg.sender == request.user %}sent{% else %}received{% endif %}">
 
-                <!-- Username inside bubble -->
-                <a href="{% url 'profile' msg.sender.username %}" class="bubble-username">
-                    {{ msg.sender.username }}
-                </a>
+                    <!-- Username inside bubble -->
+                    <a href="{% url 'profile' msg.sender.username %}" class="bubble-username">
+                        {{ msg.sender.username }}
+                    </a>
 
-                <!-- Message text -->
-                <div class="bubble-text">
-                    {{ msg.body|urlize|safe }}
+                    <!-- Message text -->
+                    <div class="bubble-text">
+                        {{ msg.body|urlize|safe }}
+                    </div>
+
                 </div>
-
-            </div>
-            {% endfor %}
+                {% endfor %}
+            {% else %}
+                <div class="empty-chat">
+                    Start your conversation with {{ other_user.username }}
+                </div>
+            {% endif %}
         {% else %}
-            <div class="empty-chat">
-                Start your conversation with {{ other_user.username }}
+            {# NOT MUTUAL FOLLOW: block chat #}
+            <div class="empty-chat text-danger fw-bold">
+                You must follow each other to chat.
             </div>
         {% endif %}
 
@@ -63,9 +71,10 @@
             name="body"
             class="chat-input"
             placeholder="Type a message..."
+            {% if not can_chat %}disabled{% endif %}
         >
 
-        <button type="submit" class="send-btn">
+        <button type="submit" class="send-btn" {% if not can_chat %}disabled{% endif %}>
             ➤
         </button>
     </form>
@@ -75,7 +84,9 @@
 <!-- Auto scroll to latest message -->
 <script>
     const messagesArea = document.getElementById("messages-area");
-    messagesArea.scrollTop = messagesArea.scrollHeight;
+    if (messagesArea) {
+        messagesArea.scrollTop = messagesArea.scrollHeight;
+    }
 </script>
 
 {% endblock %}
