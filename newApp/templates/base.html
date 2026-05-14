@@ -29,7 +29,7 @@
     // Wait until the entire page has loaded
     document.addEventListener("DOMContentLoaded", function () {
 
-        // Call your Django API endpoint using the URL name "notifications-list"
+        // Call the  Django API endpoint using the URL name "notifications-list"
         // This returns JSON in the format:
         // { count: X, next: null }
         fetch("{% url 'notifications-list' %}")
@@ -44,7 +44,7 @@
                 const notifBadge = document.getElementById("notif-count");
                 // If the badge exists, updates it
                 if (notifBadge) {
-                    // Set the number inside the red circle
+                    // Set the number inside the black circle
                     notifBadge.textContent = unreadCount;
                     // Show the badge only if there are unread notifications
                     notifBadge.style.display = unreadCount > 0 ? "inline-block" : "none";
