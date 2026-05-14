@@ -81,5 +81,9 @@ This merge unified the login system, profile prototype, follow system, and updat
 - Modified and fixed bugs in the backend design
 - Updated HTML pages and fixed a profile picture bug
 - Fixed the notification API (Django REST Framework)
-
-
+---
+  
+# Phase 1.6 — Final merge to put all of it in the main 
+- Merge backup_local_changes to the main and is resolved
+- All of the codes from previous branches is now in the main(if it doesn't worked you have to install Pillow and rest framework/delete png from the media file)
+  
